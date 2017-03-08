@@ -10,8 +10,14 @@
 	<script src="js/jquery.min.js"></script>
 	
     <style type="text/css">
-        div{
-            width:100%;
+		table{
+			border:0;
+		}
+		#title{
+			width:50%;
+		}
+        #content{
+            width:50%;
         }
     </style>
 	<script type="text/javascript">
@@ -40,11 +46,19 @@
 	
 </head>
 <body>
-	标题：<input id="title" name="title" type="text"/><br/>
-	<div>
-		内容：
-		<div id="content"></div>
-	</div>
-	<button onclick="doSubmit()">创建</button>
+	<table>
+		<tr>
+			<td align="left" valign="top"><label for="title">标题：</label></td>
+			<td><input id="title" name="title" type="text"/><br/></td>
+		</tr>
+	<tr>
+		<td align="left" valign="top"><label for="content">内容：</label></td>
+		<td><div id="content"></div></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><button onclick="doSubmit()">创建</button></td>
+	</tr>
+	</table>
 </body>
 </html>
