@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>星驰笔记本</title>
+    <!--<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>-->
+    <script type="text/javascript" charset="utf-8" src="ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="ueditor.all.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="lang/zh-cn/zh-cn.js"></script>
+	<script src="js/jquery.min.js"></script>
+	
+    <style type="text/css">
+        div{
+            width:100%;
+        }
+    </style>
+	<script type="text/javascript">
+		var ue = UE.getEditor('content');
+	</script>
+	<script type="text/javascript">
+		function doSubmit(){
+			var title = $("#title").val();
+			var htmlContent = UE.getEditor('content').getContent();
+			var data = {
+				"title": title,
+				"content": htmlContent,
+				"type": 1
+			  };
+		    $.ajax({
+				  type: 'POST',
+				  url: "http://127.0.0.1:8080/note/api/v1/note/create",
+				  data: JSON.stringify(data),
+				  success: function(){
+					alert();
+				  },
+				  contentType: "application/json;charset=utf-8"
+			});
+		}
+	</script>
+	
+</head>
+<body>
+	标题：<input id="title" name="title" type="text"/><br/>
+	<div>
+		内容：
+		<div id="content"></div>
+	</div>
+	<button onclick="doSubmit()">创建</button>
+</body>
+</html>
