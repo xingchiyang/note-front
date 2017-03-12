@@ -22,17 +22,20 @@
     </style>
 	<script type="text/javascript">
 		var ue = UE.getEditor('content');
-		var noteId = location.href.substring(location.href.lastIndexOf("id=") + 3);
-		$.ajax({
-			  type: 'GET',
-			  url: "http://127.0.0.1:8080/note/api/v1/note/get/" + noteId,
-			  success: function(data){
-				$("#title").val(data.title);
-				dubugger;
-				ue.setContent(data.content);
-			  },
-			  contentType: "application/json;charset=utf-8"
+		ue.addListener("ready", function () {
+			var noteId = location.href.substring(location.href.lastIndexOf("id=") + 3);
+			$.ajax({
+				  type: 'GET',
+				  url: "http://127.0.0.1:8080/note/api/v1/note/get/" + noteId,
+				  success: function(data){
+					$("#title").val(data.title);
+					debugger;
+					ue.setContent(data.content);
+				  },
+				  contentType: "application/json;charset=utf-8"
+			});
 		});
+		
 	</script>
 	<script type="text/javascript">
 		function doSubmit(){
