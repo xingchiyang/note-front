@@ -88,8 +88,11 @@ li{
 		});
 		
 		$('#tree').on("changed.jstree", function (e, data) {
-			alert(data.selected);
-			$("#note iframe")[0].src="./pages/create.html";
+			var isDir = data.node.a_attr.isDir;
+			if(!isDir){
+				$("#note iframe")[0].src="./pages/create.html?id=" + data.node.id;
+				var son = window.frames['createNote'];
+			}
 		});
 	  });
 </script>
@@ -111,7 +114,7 @@ li{
         <div id="Content-Main">
 			<div id="tree"></div>
 			<div id="note">
-				<iframe src="" scrolling="no" height="100%" width="100%" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+				<iframe id="createNote" src="" scrolling="no" height="100%" width="100%" frameborder="0" marginheight="0" marginwidth="0"></iframe>
 			</div>
 		</div>
     </div>
