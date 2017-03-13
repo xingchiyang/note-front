@@ -29,7 +29,6 @@
 				  url: "http://127.0.0.1:8080/note/api/v1/note/get/" + noteId,
 				  success: function(data){
 					$("#title").val(data.title);
-					debugger;
 					ue.setContent(data.content);
 				  },
 				  contentType: "application/json;charset=utf-8"
