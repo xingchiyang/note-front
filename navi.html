@@ -77,14 +77,32 @@ li{
 	
 	$(function () {
 		$('#tree').jstree({
-                   'core' : {
-						'data' : {
-							  'url' : 'http://127.0.0.1:8080/note/api/v1/file/query',
-							  'data' : function (node) {
-								return { 'id' : node.id };
-							 }
-						  }
-					}
+		   'core' : {
+				'data' : {
+					  'url' : 'http://127.0.0.1:8080/note/api/v1/file/query',
+					  'data' : function (node) {
+						return { 'id' : node.id };
+					 }
+				  }
+			},
+			"plugins" : [ "contextmenu" ], 
+			"contextmenu" : {
+				items: {
+					"ccp" : false,
+					"create" : {
+						"label" : "新建",
+						"action"   : function (obj) {
+							debugger;
+							dialog.show();
+						},
+						"_disabled"   : function (data) { 
+							var inst = jQuery.jstree.reference(data.reference),  
+							obj = inst.get_node(data.reference); 
+							return obj.a_attr.isDir;
+						}
+					 }
+				}
+			}
 		});
 		
 		$('#tree').on("changed.jstree", function (e, data) {
