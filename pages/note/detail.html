@@ -24,6 +24,7 @@
 		var ue = UE.getEditor('content');
 		ue.addListener("ready", function () {
 			var noteId = location.href.substring(location.href.lastIndexOf("id=") + 3);
+			$("#noteId").val(noteId);
 			$.ajax({
 				  type: 'GET',
 				  url: "http://127.0.0.1:8080/note/api/v1/note/get/" + noteId,
@@ -41,16 +42,18 @@
 			var title = $("#title").val();
 			var htmlContent = UE.getEditor('content').getContent();
 			var data = {
+				"id": $("#noteId").val(),
 				"title": title,
 				"content": htmlContent,
 				"type": 1
 			  };
 		    $.ajax({
 				  type: 'POST',
-				  url: "http://127.0.0.1:8080/note/api/v1/note/create",
+				  url: "http://127.0.0.1:8080/note/api/v1/note/modify",
 				  data: JSON.stringify(data),
 				  success: function(){
-					alert();
+					alert("更新成功.");
+					debugger;
 				  },
 				  contentType: "application/json;charset=utf-8"
 			});
@@ -59,6 +62,7 @@
 	
 </head>
 <body>
+	<input type="hidden" id="noteId" value=""/>
 	<table>
 		<tr>
 			<td align="left" valign="top"><label for="title">标题：</label></td>
@@ -70,7 +74,7 @@
 		</tr>
 	<tr>
 		<td></td>
-		<td><button onclick="doSubmit()">创建</button></td>
+		<td><button onclick="doSubmit()">更新</button></td>
 	</tr>
 	</table>
 </body>
