@@ -8,20 +8,26 @@
     <script type="text/javascript" charset="utf-8" src="../../ueditor.all.min.js"> </script>
     <script type="text/javascript" charset="utf-8" src="../../lang/zh-cn/zh-cn.js"></script>
 	<script src="../../js/jquery.min.js"></script>
-	
     <style type="text/css">
-		table{
-			border:0;
+		html,body,table{
+			height: 100%;
 		}
+
 		#title{
 			width:50%;
 		}
         #content{
             width:90%;
         }
+		td{
+			text-align: left;
+			vertical-align: top;
+		}
     </style>
 	<script type="text/javascript">
-		var ue = UE.getEditor('content');
+		// var ue = UE.getEditor('content');
+		var editor = new UE.ui.Editor({initialFrameHeight: "100%",initialFrameWidth: "100%" });  
+        editor.render("content"); 
 		ue.addListener("ready", function () {
 			var noteId = location.href.substring(location.href.lastIndexOf("id=") + 3);
 			$("#noteId").val(noteId);
@@ -64,18 +70,18 @@
 <body>
 	<input type="hidden" id="noteId" value=""/>
 	<table>
-		<tr>
-			<td align="left" valign="top"><label for="title">标题：</label></td>
-			<td><input id="title" name="title" type="text"/><br/></td>
+		<tr height="5%">
+			<td width="10%"><label for="title">标题：</label></td>
+			<td width="90%"><input id="title" name="title" type="text"/><br/></td>
 		</tr>
-		<tr>
-			<td align="left" valign="top"><label for="content">内容：</label></td>
+		<tr height="85%">
+			<td><label for="content">内容：</label></td>
 			<td><div id="content"></div></td>
 		</tr>
-	<tr>
-		<td></td>
-		<td><button onclick="doSubmit()">更新</button></td>
-	</tr>
+		<tr height="10%">
+			<td></td>
+			<td><button onclick="doSubmit()">更新</button></td>
+		</tr>
 	</table>
 </body>
 </html>
