@@ -9,15 +9,18 @@
     <script type="text/javascript" charset="utf-8" src="../../lang/zh-cn/zh-cn.js"></script>
 	<script src="../../js/jquery.min.js"></script>
     <style type="text/css">
-		html,body,table{
+		html,body{
 			height: 100%;
+			width: 100%;
+			overflow-y: scroll;
+			overflow-x: scroll;
 		}
-
 		#title{
 			width:50%;
 		}
         #content{
             width:90%;
+			height: 100%;
         }
 		td{
 			text-align: left;
@@ -26,7 +29,11 @@
     </style>
 	<script type="text/javascript">
 		// var ue = UE.getEditor('content');
-		var editor = new UE.ui.Editor({initialFrameHeight: "100%",initialFrameWidth: "100%" });  
+		var editor = new UE.ui.Editor({
+			initialFrameWidth:1000,//设置编辑器宽度
+			initialFrameHeight:700,//设置编辑器高度
+			scaleEnabled:true
+		});  
         editor.render("content"); 
 		ue.addListener("ready", function () {
 			var noteId = location.href.substring(location.href.lastIndexOf("id=") + 3);
@@ -70,15 +77,15 @@
 <body>
 	<input type="hidden" id="noteId" value=""/>
 	<table>
-		<tr height="5%">
-			<td width="10%"><label for="title">标题：</label></td>
+		<tr height="20px">
+			<td width="5%"><label for="title">标题：</label></td>
 			<td width="90%"><input id="title" name="title" type="text"/><br/></td>
 		</tr>
-		<tr height="85%">
+		<tr height="800px">
 			<td><label for="content">内容：</label></td>
 			<td><div id="content"></div></td>
 		</tr>
-		<tr height="10%">
+		<tr>
 			<td></td>
 			<td><button onclick="doSubmit()">更新</button></td>
 		</tr>
