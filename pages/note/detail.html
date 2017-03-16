@@ -35,13 +35,12 @@
 		}
     </style>
 	<script type="text/javascript">
-		// var ue = UE.getEditor('content');
-		var editor = new UE.ui.Editor({
+		var ue = new UE.ui.Editor({
 			initialFrameWidth:1000,//设置编辑器宽度
 			initialFrameHeight:700,//设置编辑器高度
 			scaleEnabled:true
 		});  
-        editor.render("content"); 
+        ue.render("content"); 
 		ue.addListener("ready", function () {
 			var noteId = location.href.substring(location.href.lastIndexOf("id=") + 3);
 			$("#noteId").val(noteId);

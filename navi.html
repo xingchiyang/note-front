@@ -75,6 +75,7 @@ html,body{
 	line-height: 300%;
 	height: 100%;
 }
+.vakata-context li > a { font-size: 13px; }
 </style>
 <link rel="stylesheet" href="css/themes/default/style.min.css" />
 <script src="js/jquery.min.js"></script>
@@ -83,12 +84,55 @@ html,body{
 	function clickFile(){
 		alert("我的文件");
 	}
-	
 	$(function () {
+		function getMenu(node){
+			var items = {
+				newDir: {
+					label: "新建目录",
+					icon: "./images/addDir.png",
+					separator_after: true,
+					action: function(obj){}
+				},
+				newNote: {
+					label: "新建笔记",
+					icon: "./images/addNote.png",
+					separator_after: true,
+					action: function(obj){}
+				},
+				deleteDir: {
+					label: "删除目录",
+					icon: "./images/delDir.png",
+					separator_after: true,
+					action: function(obj){
+					}
+				},
+				deleteNote: {
+					label: "删除笔记",
+					icon: "./images/delNote.png",
+					separator_after: true,
+					action: function(obj){
+						delNote(obj);
+					}
+				}
+			}
+			var isDir = node.a_attr.isDir;
+			 if (isDir) {
+				delete items.deleteNote;
+			 } else {
+				delete items.newDir;
+				delete items.newNote;
+				delete items.deleteDir;
+			 }
+			return items;
+		}
+		
 		$('#tree').jstree({
 		   'core' : {
+			   "themes" : {
+				  "variant" : "large"
+				},
 				'data' : {
-					  'url' : 'http://127.0.0.1:8080/note/api/v1/file/query',
+					  'url' : 'http://127.0.0.1:8080/note/api/v1/file/query?status=1',
 					  'data' : function (node) {
 						return { 'id' : node.id };
 					 }
@@ -96,21 +140,7 @@ html,body{
 			},
 			"plugins" : [ "contextmenu" ], 
 			"contextmenu" : {
-				items: {
-					"ccp" : false,
-					"create" : {
-						"label" : "新建",
-						"action"   : function (obj) {
-							debugger;
-							dialog.show();
-						},
-						"_disabled"   : function (data) { 
-							var inst = jQuery.jstree.reference(data.reference),  
-							obj = inst.get_node(data.reference); 
-							return obj.a_attr.isDir;
-						}
-					 }
-				}
+				items : getMenu
 			}
 		});
 		
@@ -122,8 +152,22 @@ html,body{
 		});
 	  });
 	  
+	  function delNote(data){
+		var inst = jQuery.jstree.reference(data.reference);
+		var obj = inst.get_node(data.reference); 
+		 $.ajax({
+			  type: 'GET',
+			  url: "http://127.0.0.1:8080/note/api/v1/note/delete/" + obj.id,
+			  success: function(){
+				alert("删除成功.");
+				refreshTree();
+			  },
+			  contentType: "application/json;charset=utf-8"
+		});
+	  }
+	  
 	  function refreshTree(){
-		$('#tree').refresh();
+		$('#tree').jstree(true).refresh();
 	  }
 </script>
 </head>
