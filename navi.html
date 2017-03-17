@@ -93,17 +93,20 @@ html,body{
 					separator_after: true,
 					action: function(obj){}
 				},
-				newNote: {
-					label: "新建笔记",
-					icon: "./images/addNote.png",
-					separator_after: true,
-					action: function(obj){}
-				},
 				deleteDir: {
 					label: "删除目录",
 					icon: "./images/delDir.png",
 					separator_after: true,
 					action: function(obj){
+						delDir(obj);
+					}
+				},
+				newNote: {
+					label: "新建笔记",
+					icon: "./images/addNote.png",
+					separator_after: true,
+					action: function(obj){
+						addNote(obj);
 					}
 				},
 				deleteNote: {
@@ -120,19 +123,18 @@ html,body{
 				delete items.deleteNote;
 			 } else {
 				delete items.newDir;
-				delete items.newNote;
 				delete items.deleteDir;
+				delete items.newNote;
 			 }
 			return items;
 		}
-		
 		$('#tree').jstree({
 		   'core' : {
 			   "themes" : {
 				  "variant" : "large"
 				},
 				'data' : {
-					  'url' : 'http://127.0.0.1:8080/note/api/v1/file/query?status=1',
+					  'url' : 'http://127.0.0.1:8080/note/api/v1/file/query',
 					  'data' : function (node) {
 						return { 'id' : node.id };
 					 }
@@ -143,31 +145,50 @@ html,body{
 				items : getMenu
 			}
 		});
-		
 		$('#tree').on("changed.jstree", function (e, data) {
-			var isDir = data.node.a_attr.isDir;
-			if(!isDir){
-				$("#note iframe")[0].src="./pages/note/detail.html?id=" + data.node.id;
+			var node = data.node;
+			if(typeof(node)!="undefined"){
+				var isDir = node.a_attr.isDir;
+				if(!isDir){
+					$("#note iframe")[0].src="./pages/note/save.html?cmd=detail&id=" + data.node.id;
+				}
 			}
 		});
+		
 	  });
 	  
-	  function delNote(data){
-		var inst = jQuery.jstree.reference(data.reference);
-		var obj = inst.get_node(data.reference); 
-		 $.ajax({
+	  function addNote(data){
+		var obj = getNodeObj(data);
+		$("#note iframe")[0].src="./pages/note/save.html?cmd=new&id=" + (obj.id == "j1_1" ? "" : obj.id);
+	  }
+	  function delDir (data){
+		var obj = getNodeObj(data);
+		$.ajax({
 			  type: 'GET',
-			  url: "http://127.0.0.1:8080/note/api/v1/note/delete/" + obj.id,
+			  url: "http://127.0.0.1:8080/note/api/v1/dir/remove/" + obj.id,
 			  success: function(){
-				alert("删除成功.");
 				refreshTree();
 			  },
 			  contentType: "application/json;charset=utf-8"
 		});
 	  }
-	  
+	  function delNote(data){
+		var obj = getNodeObj(data);
+		$.ajax({
+			  type: 'GET',
+			  url: "http://127.0.0.1:8080/note/api/v1/note/delete/" + obj.id,
+			  success: function(){
+				refreshTree();
+			  },
+			  contentType: "application/json;charset=utf-8"
+		});
+	  }
+	  function getNodeObj(data){
+		var inst = jQuery.jstree.reference(data.reference);
+		return inst.get_node(data.reference); 
+	  }
 	  function refreshTree(){
-		$('#tree').jstree(true).refresh();
+		$('#tree').jstree("refresh");
 	  }
 </script>
 </head>

@@ -42,47 +42,59 @@
 		});  
         ue.render("content"); 
 		ue.addListener("ready", function () {
-			var noteId = location.href.substring(location.href.lastIndexOf("id=") + 3);
-			$("#noteId").val(noteId);
-			$.ajax({
-				  type: 'GET',
-				  url: "http://127.0.0.1:8080/note/api/v1/note/get/" + noteId,
-				  success: function(data){
-					$("#title").val(data.title);
-					ue.setContent(data.content);
-				  },
-				  contentType: "application/json;charset=utf-8"
-			});
+			var cmd = getQueryString("cmd");
+			var id = getQueryString("id");
+			if(cmd == "detail"){
+				var noteId = id;
+				$.ajax({
+					  type: 'GET',
+					  url: "http://127.0.0.1:8080/note/api/v1/note/get/" + noteId,
+					  success: function(data){
+						$("#title").val(data.title);
+						ue.setContent(data.content);
+					  },
+					  contentType: "application/json;charset=utf-8"
+				});
+			}
+			
 		});
-		
-	</script>
-	<script type="text/javascript">
 		function doSubmit(){
 			var title = $("#title").val();
 			var htmlContent = UE.getEditor('content').getContent();
 			var data = {
-				"id": $("#noteId").val(),
 				"title": title,
 				"content": htmlContent,
 				"type": 1
-			  };
-		    $.ajax({
+			};
+			var url;
+			if(getQueryString("cmd") == "detail"){
+				data.id = getQueryString("id");
+				url = "http://127.0.0.1:8080/note/api/v1/note/modify";
+			} else if (getQueryString("cmd") == "new"){
+				data.dirId = getQueryString("id");
+				url = "http://127.0.0.1:8080/note/api/v1/note/create";
+			}
+			$.ajax({
 				  type: 'POST',
-				  url: "http://127.0.0.1:8080/note/api/v1/note/modify",
+				  url: url,
 				  data: JSON.stringify(data),
 				  success: function(){
-					alert("更新成功.");
-					debugger;
+					alert("保存成功.");
 				  },
 				  contentType: "application/json;charset=utf-8"
 			});
+			
+		}
+		function getQueryString(name){
+			 var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+			 var r = window.location.search.substr(1).match(reg);
+			 if(r!=null)return  unescape(r[2]); return null;
 		}
 	</script>
 	
 </head>
 <body>
-	<input type="hidden" id="noteId" value=""/>
-	<table cellspacing="10">
+<input type="hidden" id="noteId" value=""/>	<table cellspacing="10">
 		<tr height="20px">
 			<td width="5%"><label for="title">标题：</label></td>
 			<td width="90%"><input id="title" name="title" type="text"/><br/></td>
@@ -93,7 +105,7 @@
 		</tr>
 		<tr>
 			<td></td>
-			<td><button onclick="doSubmit()">更新</button></td>
+			<td><button onclick="doSubmit()">保存</button></td>
 		</tr>
 	</table>
 </body>
