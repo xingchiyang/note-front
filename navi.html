@@ -18,7 +18,7 @@ html,body{
     float: left;
     height: 50px;
     width: 100%;
-    background:#398DEE;
+    background:#23262E;
 }
 #Content{
     height: 100%;
@@ -50,20 +50,6 @@ html,body{
 	width:79.9%;
 	background:#FFFFFF;
 }
-.menu li{
-	list-style-type:none;
-	color: #000000;
-	margin-top:20px;
-}
-#file{
-	list-style-image: url(images/menu_file.png);
-}
-#tag{
-	list-style-image: url(images/menu_tag.png);
-}
-#recycle{
-	list-style-image: url(images/menu_recycle.png);
-}
 #logoImg{
 	float: left;
 	height: 100%;
@@ -72,16 +58,22 @@ html,body{
 	float: left;
 	text-align: center;
 	color: white; 
-	line-height: 300%;
+	line-height: 50px;
 	height: 100%;
+	margin-left: 10px;
 }
 .vakata-context li > a { font-size: 13px; }
 </style>
 <link rel="stylesheet" href="jstree/themes/default/style.min.css" />
+<link rel="stylesheet" href="layui/css/layui.css" />
 <script src="js/jquery.min.js"></script>
 <script src="jstree/jstree.min.js"></script>
-<script src="layer/layer.js"></script>
+<script src="layui/layui.js"></script>
 <script>
+	layui.use(['layer', 'element'], function(){
+	  var layer = layui.layer;
+	  var element = layui.element();
+	}); 
 	function clickFile(){
 		alert("我的文件");
 	}
@@ -148,6 +140,7 @@ html,body{
 			   "themes" : {
 				  "variant" : "large"
 				},
+				"check_callback" : true,
 				'data' : {
 					  'url' : 'http://127.0.0.1:8080/note/api/v1/file/query',
 					  'data' : function (node) {
@@ -155,10 +148,15 @@ html,body{
 					 }
 				  }
 			},
-			"plugins" : [ "contextmenu" ], 
+			"plugins" : [ "contextmenu","dnd", "types" ], 
 			"contextmenu" : {
 				items : getMenu
-			}
+			},
+			 'types' : {
+				"#" : {
+					  "max_children" : 1
+					}
+			} 
 		});
 		$('#tree').on("changed.jstree", function (e, data) {
 			var node = data.node;
@@ -169,7 +167,9 @@ html,body{
 				}
 			}
 		});
-		
+		$('#tree').on('move_node.jstree', function(e,data){
+			 console.info(data);
+		})
 	  });
 	  function addDir(data){
 		var obj = getNodeObj(data);
@@ -257,15 +257,14 @@ html,body{
 <body>
 <div id="Container">
     <div id="Header">
-        <img id="logoImg" src="images/logo.png" />
-		<span id="logoName">星驰笔记本</span>
+        <img id="logoImg" src="images/logo.png" /><span id="logoName">星驰笔记本</span>
     </div>
     <div id="Content">
         <div id="Content-Left">
-			<ul class="menu">
-				<li id="file" onclick="clickFile()">我的文件</li>
-				<li id="tag">我的标签</li>
-				<li id="recycle">回收站</li>
+			<ul class="layui-nav layui-nav-tree" lay-filter="demo" style="height:100%">
+			  <li class="layui-nav-item"><a href=""><img src="images/menu_file.png"/>&nbsp;&nbsp;我的文件</a></li>
+			  <li class="layui-nav-item"><a href=""><img src="images/menu_tag.png"/>&nbsp;&nbsp;我的标签</a></li>
+			  <li class="layui-nav-item"><a href=""><img src="images/menu_recycle.png"/>&nbsp;&nbsp;回收站</a></li>
 			</ul>
 		</div>
         <div id="Content-Main">
