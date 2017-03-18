@@ -15,3 +15,6 @@
 
 > wangeditor
 * http://www.kancloud.cn/wangfupeng/wangeditor2
+
+> layui
+* http://www.layui.com/doc/modules/upload.html
