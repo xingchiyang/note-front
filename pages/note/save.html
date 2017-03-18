@@ -1,13 +1,14 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
     <title>星驰笔记本</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <script type="text/javascript" charset="utf-8" src="../../ueditor.config.js"></script>
-    <script type="text/javascript" charset="utf-8" src="../../ueditor.all.min.js"> </script>
-    <script type="text/javascript" charset="utf-8" src="../../lang/zh-cn/zh-cn.js"></script>
-	<script src="../../js/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../simditor/styles/simditor.css" />
+
+	<script type="text/javascript" src="../../simditor/scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="../../simditor/scripts/module.js"></script>
+	<script type="text/javascript" src="../../simditor/scripts/hotkeys.js"></script>
+	<script type="text/javascript" src="../../simditor/scripts/uploader.js"></script>
+	<script type="text/javascript" src="../../simditor/scripts/simditor.js"></script>
     <style type="text/css">
 		html,body{
 			height: 100%;
@@ -18,10 +19,14 @@
 		#title{
 			width:50%;
 		}
-        #content{
-            width:90%;
+        #editor{
+            width:100%;
 			height: 100%;
         }
+		table{
+			width:100%;
+			height: 92%;
+		}
 		td{
 			text-align: left;
 			vertical-align: top;
@@ -35,32 +40,24 @@
 		}
     </style>
 	<script type="text/javascript">
-		var ue = new UE.ui.Editor({
-			initialFrameWidth:1000,//设置编辑器宽度
-			initialFrameHeight:700,//设置编辑器高度
-			scaleEnabled:true
-		});  
-        ue.render("content"); 
-		ue.addListener("ready", function () {
-			var cmd = getQueryString("cmd");
-			var id = getQueryString("id");
-			if(cmd == "detail"){
-				var noteId = id;
-				$.ajax({
-					  type: 'GET',
-					  url: "http://127.0.0.1:8080/note/api/v1/note/get/" + noteId,
-					  success: function(data){
-						$("#title").val(data.title);
-						ue.setContent(data.content);
-					  },
-					  contentType: "application/json;charset=utf-8"
-				});
-			}
-			
-		});
+		var cmd = getQueryString("cmd");
+		var id = getQueryString("id");
+		if(cmd == "detail"){
+			var noteId = id;
+			$.ajax({
+				  type: 'GET',
+				  url: "http://127.0.0.1:8080/note/api/v1/note/get/" + noteId,
+				  success: function(data){
+					$("#title").val(data.title);
+					editor.setValue(data.content);
+				  },
+				  contentType: "application/json;charset=utf-8"
+			});
+		}
 		function doSubmit(){
 			var title = $("#title").val();
-			var htmlContent = UE.getEditor('content').getContent();
+			debugger;
+			var htmlContent = editor.getValue();
 			var data = {
 				"title": title,
 				"content": htmlContent,
@@ -94,16 +91,32 @@
 	
 </head>
 <body>
-<input type="hidden" id="noteId" value=""/>	<table cellspacing="10">
-		<tr height="20px">
-			<td width="5%"><label for="title">标题：</label></td>
+	<table>
+		<tr height="5%">
+			<td width="10%"><label for="title">标题：</label></td>
 			<td width="90%"><input id="title" name="title" type="text"/><br/></td>
 		</tr>
-		<tr height="800px">
-			<td><label for="content">内容：</label></td>
-			<td><div id="content"></div></td>
+		<tr height="90%">
+			<td><label for="editor">内容：</label></td>
+			<td><textarea id="editor" placeholder="请输入..." autofocus></textarea></td>
+			<script type="text/javascript">
+			var editor = new Simditor({
+			  textarea: $('#editor'),
+			  placeholder: '',
+			  defaultImage: '../../simditor/images/image.png',
+			  params: {},
+			  upload: true,
+			  tabIndent: true,
+			  toolbar: true,
+			  toolbarFloat: true,
+			  toolbarFloatOffset: 0,
+			  toolbarHidden: false,
+			  pasteImage: true,
+			  cleanPaste: true
+			});
+		</script>
 		</tr>
-		<tr>
+		<tr height="5%">
 			<td></td>
 			<td><button onclick="doSubmit()">保存</button></td>
 		</tr>
