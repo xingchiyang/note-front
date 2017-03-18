@@ -104,6 +104,14 @@ html,body{
 						delDir(obj);
 					}
 				},
+				reNameDir: {
+					label: "重命名",
+					icon: "./images/renameDir.png",
+					separator_after: true,
+					action: function(obj){
+						reNameDir(obj);
+					}
+				},
 				newNote: {
 					label: "新建笔记",
 					icon: "./images/addNote.png",
@@ -124,10 +132,14 @@ html,body{
 			var isDir = node.a_attr.isDir;
 			 if (isDir) {
 				delete items.deleteNote;
+				if(node.id == "j1_1"){
+					delete items.reNameDir;
+				}
 			 } else {
 				delete items.newDir;
 				delete items.deleteDir;
 				delete items.newNote;
+				delete items.reNameDir;
 			 }
 			return items;
 		}
@@ -164,7 +176,7 @@ html,body{
 		layer.prompt({
 		  value: '',
 		  maxlength: 50,
-		  title: '请输入新建目录名',
+		  title: '请输入目录名',
 		}, function(value, index, elem){
 		  var param = {
 				"name": value,
@@ -186,26 +198,50 @@ html,body{
 		var obj = getNodeObj(data);
 		$("#note iframe")[0].src="./pages/note/save.html?cmd=new&id=" + (obj.id == "j1_1" ? "" : obj.id);
 	  }
-	  function delDir (data){
+	  function reNameDir(data){
 		var obj = getNodeObj(data);
-		$.ajax({
+		layer.prompt({
+		  value: '',
+		  maxlength: 50,
+		  title: '请输入目录名',
+		}, function(value, index, elem){
+		   $.ajax({
 			  type: 'GET',
-			  url: "http://127.0.0.1:8080/note/api/v1/dir/remove/" + obj.id,
+			  url: "http://127.0.0.1:8080/note/api/v1/dir/rename?id=" + obj.id + "&newName=" + value,
 			  success: function(){
-				refreshTree();
 			  },
 			  contentType: "application/json;charset=utf-8"
+		  });
+		  refreshTree();
+		  layer.close(index);
+		});
+	  }
+	  function delDir (data){
+		layer.confirm('是否删除目录?', {icon: 3, title:'提示'}, function(index){
+			var obj = getNodeObj(data);
+			$.ajax({
+				  type: 'GET',
+				  url: "http://127.0.0.1:8080/note/api/v1/dir/remove/" + obj.id,
+				  success: function(){
+					refreshTree();
+				  },
+				  contentType: "application/json;charset=utf-8"
+			});
+		  layer.close(index);
 		});
 	  }
 	  function delNote(data){
 		var obj = getNodeObj(data);
-		$.ajax({
+		layer.confirm('是否删除笔记?', {icon: 3, title:'提示'}, function(index){
+		  $.ajax({
 			  type: 'GET',
 			  url: "http://127.0.0.1:8080/note/api/v1/note/delete/" + obj.id,
 			  success: function(){
 				refreshTree();
 			  },
 			  contentType: "application/json;charset=utf-8"
+		  });
+		  layer.close(index);
 		});
 	  }
 	  function getNodeObj(data){
