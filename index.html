@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>星驰笔记本</title>
+<style type="text/css">
+html,body{  
+    height: 100%;  
+}
+#Container{
+    width:100%;
+    margin:0 auto;/*设置整个容器在浏览器中水平居中*/
+	background:#E8E8E8;
+	height:100%;
+}
+#Header{
+    position: fixed;
+    float: left;
+    height: 50px;
+    width: 100%;
+    background:#23262E;
+}
+#Content{
+    height: 100%;
+    width: 100%;
+    padding-top: 50px;
+	position: fixed;
+}
+#Content-Left{
+    height: 100%;
+    width:15%;
+    float:left;
+    background:#F5F5F5;
+}
+#Content-Main{
+	height: 100%;
+    width:84.5%;
+    float:right;
+	background: #E8E8E8;
+}
+#logoImg{
+	float: left;
+	height: 100%;
+}
+#logoName{
+	float: left;
+	text-align: center;
+	color: white; 
+	line-height: 50px;
+	height: 100%;
+	margin-left: 10px;
+}
+</style>
+<link rel="stylesheet" href="layui/css/layui.css" />
+<script src="js/jquery.min.js"></script>
+<script src="layui/layui.js"></script>
+<script>
+	layui.use(['element'], function(){
+	  var element = layui.element();
+	}); 
+	function select(page){
+		var url = "./pages/" + page + "/index.html";
+		$('#iframe')[0].src = url;
+	}
+</script>
+</head>
+ 
+<body>
+<div id="Container">
+    <div id="Header">
+        <img id="logoImg" src="images/logo.png" /><span id="logoName">星驰笔记本</span>
+    </div>
+    <div id="Content">
+        <div id="Content-Left">
+			<ul class="layui-nav layui-nav-tree" lay-filter="demo" style="height:100%">
+			  <li class="layui-nav-item"><a onclick="select('myFile')"><img src="images/menu_file.png"/>&nbsp;&nbsp;我的文件</a></li>
+			  <li class="layui-nav-item"><a onclick="select('myTag')"><img src="images/menu_tag.png"/>&nbsp;&nbsp;我的标签</a></li>
+			  <li class="layui-nav-item"><a onclick="select('myRecycle')"><img src="images/menu_recycle.png"/>&nbsp;&nbsp;回收站</a></li>
+			</ul>
+		</div>
+        <div id="Content-Main">
+			<iframe id="iframe" src="./pages/myFile/index.html" scrolling="no" height="100%" width="100%" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+		</div>
+    </div>
+</div>
+</body>
+</html>
