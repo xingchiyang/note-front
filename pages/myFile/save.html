@@ -20,10 +20,8 @@
 		}
     </style>
 	<script type="text/javascript">
-		var form;
-		var layedit;
 		layui.use(['form', 'layedit', 'upload'], function(){
-		  form = layui.form();
+		 var form = layui.form();
 		  layui.upload({
 			  url: ''
 			  ,ext: 'jpg|png|gif' //那么，就只会支持这三种格式的上传。注意是用|分割。
@@ -44,9 +42,20 @@
 				  contentType: "application/json;charset=utf-8"
 			});
 		}
+		function reset(){
+			$("#title").val("");
+			editor.setValue("");
+		}
 		function doSubmit(){
 			var title = $("#title").val();
 			var htmlContent = editor.getValue();
+			debugger;
+			if($.trim(title).length == 0){
+				layer.tips('标题不能为空', 'title', {
+					tips: 1
+				});
+				return;
+			}
 			var data = {
 				"title": title,
 				"content": htmlContent,
@@ -65,7 +74,7 @@
 				  url: url,
 				  data: JSON.stringify(data),
 				  success: function(){
-					alert("保存成功.");
+					layer.msg("保存成功.");
 				  },
 				  contentType: "application/json;charset=utf-8"
 			});
@@ -81,44 +90,42 @@
 	
 </head>
 <body>
-	<form class="layui-form" action="">
-	  <div class="layui-form-item">
-		<label class="layui-form-label">标题</label>
-		<div class="layui-input-block">
-		  <input type="text" id="title" required style="width: 450px; margin-top: 10px;" lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
-		</div>
-	  </div>
-	  <div class="layui-form-item layui-form-text">
-		<label class="layui-form-label">内容</label>
-		<div class="layui-input-block" style="width: 750px;">
-		  <textarea id="editor" placeholder="请输入..." autofocus></textarea>
-		  <script type="text/javascript">
-			var editor = new Simditor({
-			  textarea: $('#editor'),
-			  placeholder: '',
-			  defaultImage: '../../simditor/images/image.png',
-			  params: {},
-			  upload: true,
-			  tabIndent: true,
-			  toolbar: true,
-			  toolbarFloat: true,
-			  toolbarFloatOffset: 0,
-			  toolbarHidden: false,
-			  pasteImage: true,
-			  cleanPaste: true
-			});
-		</script>
-		</div>
-	  </div>
-	   <div class="layui-form-item">
-		<label class="layui-form-label">附件</label>
-		<input type="file" name="attach" class="layui-upload-file">
-	   </div>
-	  <div class="layui-form-item">
-		<div class="layui-input-block">
-		  <button onclick="doSubmit()" class="layui-btn" lay-submit lay-filter="formDemo">保存</button>
-		  <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-		</div>
-	  </div>
-	</form>
+  <div class="layui-form-item">
+	<label class="layui-form-label">标题</label>
+	<div class="layui-input-block">
+	  <input type="text" id="title" required style="width: 450px; margin-top: 10px;" lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+	</div>
+  </div>
+  <div class="layui-form-item layui-form-text">
+	<label class="layui-form-label">内容</label>
+	<div class="layui-input-block" style="width: 750px;">
+	  <textarea id="editor" placeholder="请输入..." autofocus></textarea>
+	  <script type="text/javascript">
+		var editor = new Simditor({
+		  textarea: $('#editor'),
+		  placeholder: '',
+		  defaultImage: '../../simditor/images/image.png',
+		  params: {},
+		  upload: true,
+		  tabIndent: true,
+		  toolbar: true,
+		  toolbarFloat: true,
+		  toolbarFloatOffset: 0,
+		  toolbarHidden: false,
+		  pasteImage: true,
+		  cleanPaste: true
+		});
+	</script>
+	</div>
+  </div>
+   <div class="layui-form-item">
+	<label class="layui-form-label">附件</label>
+	<input type="file" name="attach" class="layui-upload-file">
+   </div>
+  <div class="layui-form-item">
+	<div class="layui-input-block">
+	  <button onclick="doSubmit()" class="layui-btn">保存</button>
+	  <button onclick="reset()" type="reset" class="layui-btn layui-btn-primary">重置</button>
+	</div>
+  </div>
 </html>
