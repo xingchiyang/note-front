@@ -13,7 +13,7 @@
 	<script src="../../layui/layui.js"></script>
     <style type="text/css">
 		html,body{
-			height: 98%;
+			height: 97%;
 			width: 100%;
 			overflow-y: scroll;
 			overflow-x: scroll;
@@ -85,12 +85,12 @@
 	  <div class="layui-form-item">
 		<label class="layui-form-label">标题</label>
 		<div class="layui-input-block">
-		  <input type="text" id="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+		  <input type="text" id="title" required style="width: 450px; margin-top: 10px;" lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
 		</div>
 	  </div>
 	  <div class="layui-form-item layui-form-text">
 		<label class="layui-form-label">内容</label>
-		<div class="layui-input-block">
+		<div class="layui-input-block" style="width: 750px;">
 		  <textarea id="editor" placeholder="请输入..." autofocus></textarea>
 		  <script type="text/javascript">
 			var editor = new Simditor({

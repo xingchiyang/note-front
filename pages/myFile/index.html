@@ -115,7 +115,7 @@
 				if(typeof(node)!="undefined"){
 					var isDir = node.a_attr.isDir;
 					if(!isDir){
-						$("#note iframe")[0].src="./save.html?cmd=detail&id=" + data.node.id;
+						$("#detailNote")[0].src="./save.html?cmd=detail&id=" + data.node.id;
 					}
 				}
 			});
@@ -208,6 +208,6 @@
 <body>
 	<div id="tree"></div>
 	<div id="note">
-		<iframe id="detailNote" src="" height="100%" width="100%" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+		<iframe id="detailNote" src="" scrolling="no"  height="100%" width="100%" frameborder="0" marginheight="0" marginwidth="0"></iframe>
 	</div>
 </html>
