@@ -49,7 +49,6 @@
 		function doSubmit(){
 			var title = $("#title").val();
 			var htmlContent = editor.getValue();
-			debugger;
 			if($.trim(title).length == 0){
 				layer.tips('标题不能为空', 'title', {
 					tips: 1
@@ -106,7 +105,13 @@
 		  placeholder: '',
 		  defaultImage: '../../simditor/images/image.png',
 		  params: {},
-		  upload: true,
+		  upload: {
+			url: 'http://127.0.0.1:8080/note/api/v1/upload/img',
+			params: null,
+			fileKey: 'upload_file',
+			connectionCount: 3,
+			leaveConfirm: 'Uploading is in progress, are you sure to leave this page?'
+		  },
 		  tabIndent: true,
 		  toolbar: true,
 		  toolbarFloat: true,
