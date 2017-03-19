@@ -19,12 +19,14 @@ html,body{
     height: 50px;
     width: 100%;
     background:#23262E;
+	z-index: 2;
 }
 #Content{
     height: 100%;
     width: 100%;
-    padding-top: 50px;
+    padding-top: 49px;
 	position: fixed;
+	z-index:1;
 }
 #Content-Left{
     height: 100%;
@@ -72,7 +74,7 @@ html,body{
     </div>
     <div id="Content">
         <div id="Content-Left">
-			<ul class="layui-nav layui-nav-tree" lay-filter="demo" style="height:100%">
+			<ul class="layui-nav layui-nav-tree" style="height:100%">
 			  <li class="layui-nav-item"><a onclick="select('myFile')"><img src="images/menu_file.png"/>&nbsp;&nbsp;我的文件</a></li>
 			  <li class="layui-nav-item"><a onclick="select('myTag')"><img src="images/menu_tag.png"/>&nbsp;&nbsp;我的标签</a></li>
 			  <li class="layui-nav-item"><a onclick="select('myRecycle')"><img src="images/menu_recycle.png"/>&nbsp;&nbsp;回收站</a></li>
