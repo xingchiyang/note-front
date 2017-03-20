@@ -30,19 +30,20 @@ html,body{
 }
 #Content-Left{
     height: 100%;
-    width:15%;
+    width:200px;
     float:left;
     background:#F5F5F5;
 }
 #Content-Main{
 	height: 100%;
-    width:84.5%;
-    float:right;
+    width: 100%;
+    padding-left: 200px;
 	background: #E8E8E8;
 }
 #logoImg{
 	float: left;
 	height: 100%;
+	margin-left: 10px;
 }
 #logoName{
 	float: left;
@@ -74,7 +75,7 @@ html,body{
     </div>
     <div id="Content">
         <div id="Content-Left">
-			<ul class="layui-nav layui-nav-tree" style="height:100%">
+			<ul class="layui-nav layui-nav-tree" style="height:100%; width: 100%;">
 			  <li class="layui-nav-item"><a onclick="select('myFile')"><img src="images/menu_file.png"/>&nbsp;&nbsp;我的文件</a></li>
 			  <li class="layui-nav-item"><a onclick="select('myTag')"><img src="images/menu_tag.png"/>&nbsp;&nbsp;我的标签</a></li>
 			  <li class="layui-nav-item"><a onclick="select('myRecycle')"><img src="images/menu_recycle.png"/>&nbsp;&nbsp;回收站</a></li>
