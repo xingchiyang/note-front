@@ -3,12 +3,6 @@
 <head>
     <title>星驰笔记本</title>
 	<link rel="stylesheet" href="../../layui/css/layui.css" />
-	<link rel="stylesheet" type="text/css" href="../../simditor/styles/simditor.css" />
-	<script type="text/javascript" src="../../simditor/scripts/jquery.min.js"></script>
-	<script type="text/javascript" src="../../simditor/scripts/module.js"></script>
-	<script type="text/javascript" src="../../simditor/scripts/hotkeys.js"></script>
-	<script type="text/javascript" src="../../simditor/scripts/uploader.js"></script>
-	<script type="text/javascript" src="../../simditor/scripts/simditor.js"></script>
 	<script src="../../js/jquery.min.js"></script>
 	<script src="../../layui/layui.js"></script>
     <style type="text/css">
@@ -20,35 +14,13 @@
 		}
     </style>
 	<script type="text/javascript">
-		layui.use(['form', 'layedit', 'upload'], function(){
-		 var form = layui.form();
-		  layui.upload({
-			  url: ''
-			  ,ext: 'jpg|png|gif' //那么，就只会支持这三种格式的上传。注意是用|分割。
-			  ,success: function(res, input){}
-			});        
-		});
-		var cmd = getQueryString("cmd");
-		var id = getQueryString("id");
-		if(cmd == "detail"){
-			var noteId = id;
-			$.ajax({
-				  type: 'GET',
-				  url: "http://127.0.0.1:8080/note/api/v1/note/get/" + noteId,
-				  success: function(data){
-					$("#title").val(data.title);
-					editor.setValue(data.content);
-				  },
-				  contentType: "application/json;charset=utf-8"
-			});
-		}
 		function reset(){
 			$("#title").val("");
-			editor.setValue("");
+			layedit.setContent(index, "");
 		}
 		function doSubmit(){
 			var title = $("#title").val();
-			var htmlContent = editor.getValue();
+			var htmlContent = layedit.getContent(index);
 			if($.trim(title).length == 0){
 				layer.tips('标题不能为空', 'title', {
 					tips: 1
@@ -77,14 +49,12 @@
 				  },
 				  contentType: "application/json;charset=utf-8"
 			});
-			
 		}
 		function getQueryString(name){
 			 var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
 			 var r = window.location.search.substr(1).match(reg);
 			 if(r!=null)return  unescape(r[2]); return null;
 		}
-		
 	</script>
 	
 </head>
@@ -98,27 +68,31 @@
   <div class="layui-form-item layui-form-text">
 	<label class="layui-form-label">内容</label>
 	<div class="layui-input-block" style="width: 70%;">
-	  <textarea id="editor" placeholder="请输入..." autofocus></textarea>
+	  <textarea id="editor" style="display: none;" autofocus></textarea>
 	  <script type="text/javascript">
-		var editor = new Simditor({
-		  textarea: $('#editor'),
-		  placeholder: '',
-		  defaultImage: '../../simditor/images/image.png',
-		  params: {},
-		  upload: {
-			url: 'http://127.0.0.1:8080/note/api/v1/upload/img',
-			params: null,
-			fileKey: 'upload_file',
-			connectionCount: 3,
-			leaveConfirm: 'Uploading is in progress, are you sure to leave this page?'
-		  },
-		  tabIndent: true,
-		  toolbar: true,
-		  toolbarFloat: true,
-		  toolbarFloatOffset: 0,
-		  toolbarHidden: false,
-		  pasteImage: true,
-		  cleanPaste: true
+		var layedit;
+		var index;
+		layui.use(['form', 'layedit', 'upload'], function(){
+			 var form = layui.form();
+			 layedit = layui.layedit;
+			 layui.upload();
+			 index = layedit.build('editor', {
+				 height: 600
+			 });
+			 var cmd = getQueryString("cmd");
+			 var id = getQueryString("id");
+			 if(cmd == "detail"){
+				var noteId = id;
+				$.ajax({
+					  type: 'GET',
+					  url: "http://127.0.0.1:8080/note/api/v1/note/get/" + noteId,
+					  success: function(data){
+						$("#title").val(data.title);
+						layedit.setContent(index, data.content);
+					  },
+					  contentType: "application/json;charset=utf-8"
+				});
+			 }
 		});
 	</script>
 	</div>
