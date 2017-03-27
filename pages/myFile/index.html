@@ -94,7 +94,7 @@
 					},
 					"check_callback" : true,
 					'data' : {
-						  'url' : 'http://127.0.0.1:8080/note/api/v1/file/query',
+						  'url' : '/note/api/v1/file/query',
 						  'data' : function (node) {
 							return { 'id' : node.id };
 						 }
@@ -136,7 +136,7 @@
 				};
 			  $.ajax({
 					  type: 'POST',
-					  url: "http://127.0.0.1:8080/note/api/v1/dir/create",
+					  url: "/note/api/v1/dir/create",
 					  data: JSON.stringify(param),
 					  success: function(){
 					  },
@@ -159,7 +159,7 @@
 			}, function(value, index, elem){
 			   $.ajax({
 				  type: 'GET',
-				  url: "http://127.0.0.1:8080/note/api/v1/dir/rename?id=" + obj.id + "&newName=" + value,
+				  url: "/note/api/v1/dir/rename?id=" + obj.id + "&newName=" + value,
 				  success: function(){
 				  },
 				  contentType: "application/json;charset=utf-8"
@@ -173,7 +173,7 @@
 				var obj = getNodeObj(data);
 				$.ajax({
 					  type: 'GET',
-					  url: "http://127.0.0.1:8080/note/api/v1/dir/remove/" + obj.id,
+					  url: "/note/api/v1/dir/remove/" + obj.id,
 					  success: function(){
 						refreshTree();
 					  },
@@ -187,7 +187,7 @@
 			layer.confirm('是否删除笔记?', {icon: 3, title:'提示'}, function(index){
 			  $.ajax({
 				  type: 'GET',
-				  url: "http://127.0.0.1:8080/note/api/v1/note/delete/" + obj.id,
+				  url: "/note/api/v1/note/delete/" + obj.id,
 				  success: function(){
 					refreshTree();
 				  },

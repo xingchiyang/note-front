@@ -35,10 +35,10 @@
 			var url;
 			if(getQueryString("cmd") == "detail"){
 				data.id = getQueryString("id");
-				url = "http://127.0.0.1:8080/note/api/v1/note/modify";
+				url = "/note/api/v1/note/modify";
 			} else if (getQueryString("cmd") == "new"){
 				data.dirId = getQueryString("id");
-				url = "http://127.0.0.1:8080/note/api/v1/note/create";
+				url = "/note/api/v1/note/create";
 			}
 			$.ajax({
 				  type: 'POST',
@@ -76,6 +76,12 @@
 			 var form = layui.form();
 			 layedit = layui.layedit;
 			 layui.upload();
+			 layedit.set({
+			  uploadImage: {
+				url: '/note/api/v1/upload/img',
+				type: 'post'
+			  }
+			});
 			 index = layedit.build('editor', {
 				 height: 600
 			 });
@@ -85,7 +91,7 @@
 				var noteId = id;
 				$.ajax({
 					  type: 'GET',
-					  url: "http://127.0.0.1:8080/note/api/v1/note/get/" + noteId,
+					  url: "/note/api/v1/note/get/" + noteId,
 					  success: function(data){
 						$("#title").val(data.title);
 						layedit.setContent(index, data.content);
