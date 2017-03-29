@@ -42,10 +42,21 @@
 				});
 				return;
 			}
+			var attachs = new Array();
+			for(i in attachList){
+				var id = attachList[i][0];
+				var name = attachList[i][1];
+				var attach = {
+					"id": id,
+					"name": name
+				};
+				attachs.push(attach);
+			}
 			var data = {
 				"title": title,
 				"content": htmlContent,
-				"type": 1
+				"type": 1,
+				"attach": attachs
 			};
 			var url;
 			if(getQueryString("cmd") == "detail"){
@@ -80,14 +91,18 @@
 			var html = "";
 			var delIndex = -1;
 			$.each(attachList, function(index, value){
+			debugger;
 				var _id = value[0];
 				var _title = value[1];
 				if(_id == attachId){
 					delIndex = index;
 				} else {
+					html += getOneHtml(_id, _title);
+				/*
 					html += "&nbsp;&nbsp;";
 					html += "<span>" + _title + "</span>";
 					html += "<img onclick=\"delAttach(\'" + _id + "\',\'" + _title + "\')\" src=\"../../images/delAttach.png\" />";
+					*/
 				}
 			});
 			$('#attachList').html(html);
@@ -113,6 +128,13 @@
 				  },
 				  contentType: "application/json;charset=utf-8"
 			});
+		}
+		function getOneHtml(_id, _title){
+			var html = "";
+			html += "&nbsp;&nbsp;";
+			html += "<span>" + _title + "</span>";
+			html += "<img onclick=\"delAttach(\'" + _id + "\',\'" + _title + "\')\" src=\"../../images/delAttach.png\" />";
+			return html;
 		}
 	</script>
 	
@@ -146,16 +168,23 @@
 					if($.inArray(new Array(id,title), attachList) == -1){
 						attachList.push(new Array(id, title));
 					}
+					debugger;
 					for (key in attachList) {
 						var attach = attachList[key];
 						var _id = attach[0];
 						var _title = attach[1];
+						html += getOneHtml(_id, _title);
+						/*
 						html += "&nbsp;&nbsp;";
 						html += "<span>" + _title + "</span>";
 						html += "<img onclick=\"delAttach(\'" + _id + "\',\'" + _title + "\')\" src=\"../../images/delAttach.png\" />";
+						*/
 					}
 					$('#attachList').html(html);
-					$('#attachList').show();
+					if(attachList.length > 0){
+						$('#attachList').show();
+					}
+					
 				}
 			 });
 			 layedit.set({
@@ -175,8 +204,22 @@
 					  type: 'GET',
 					  url: "/note/api/v1/note/get/" + noteId,
 					  success: function(data){
+					  debugger;
 						$("#title").val(data.title);
 						layedit.setContent(index, data.content);
+						// 显示附件
+						var attachs = data.attach;
+						var html = "";
+						if(attachs.length > 0){
+							for(i in attachs){
+								var _id = attachs[i].id;
+								var _title = attachs[i].name;
+								attachList.push(new Array(_id, _title));
+								html += getOneHtml(_id, _title);
+							}
+							$('#attachList').html(html);
+							$('#attachList').show();
+						}
 					  },
 					  contentType: "application/json;charset=utf-8"
 				});
