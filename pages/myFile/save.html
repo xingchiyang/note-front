@@ -12,8 +12,16 @@
 			overflow-y: scroll;
 			overflow-x: scroll;
 		}
+		.bor{
+			border:1px dashed #009688;
+			width: 500px;
+			height: 40px;
+			margin-top:10px;
+			overflow:auto;
+		}
     </style>
 	<script type="text/javascript">
+		var attachList = new Array();
 		function reset(){
 			$("#title").val("");
 			layedit.setContent(index, "");
@@ -45,7 +53,12 @@
 				  url: url,
 				  data: JSON.stringify(data),
 				  success: function(){
-					layer.msg("保存成功.");
+					layer.msg("保存成功.", {
+						icon: 1,
+						time: 1000
+					}, function(){
+						window.parent.refreshTree();
+					});
 				  },
 				  contentType: "application/json;charset=utf-8"
 			});
@@ -54,6 +67,28 @@
 			 var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
 			 var r = window.location.search.substr(1).match(reg);
 			 if(r!=null)return  unescape(r[2]); return null;
+		}
+		function delAttach(attachId, attachTitle){
+			var html = "";
+			var delIndex = -1;
+			$.each(attachList, function(index, value){
+				var _id = value[0];
+				var _title = value[1];
+				if(_id == attachId){
+					delIndex = index;
+				} else {
+					html += "&nbsp;&nbsp;";
+					html += "<span>" + _title + "</span>";
+					html += "<img onclick=\"delAttach(\'" + _id + "\',\'" + _title + "\')\" src=\"../../images/delAttach.png\" />";
+				}
+			});
+			if(delIndex != -1){
+				attachList.splice(delIndex, 1);
+			}
+			$('#attachList').html(html);
+			if(attachList.length == 0){
+				$('#attachList').hide();
+			}
 		}
 	</script>
 	
@@ -75,10 +110,33 @@
 		layui.use(['form', 'layedit', 'upload'], function(){
 			 var form = layui.form();
 			 layedit = layui.layedit;
-			 layui.upload();
+			 layui.upload({
+				url: '/note/api/v1/upload/file',
+				method: 'post',
+				before: function(input){
+			    },
+				success: function(res){
+					var html = "";
+					var id = res.data.id;
+					var title = res.data.title;
+					if($.inArray(new Array(id,title), attachList) == -1){
+						attachList.push(new Array(id, title));
+					}
+					for (key in attachList) {
+						var attach = attachList[key];
+						var _id = attach[0];
+						var _title = attach[1];
+						html += "&nbsp;&nbsp;";
+						html += "<span>" + _title + "</span>";
+						html += "<img onclick=\"delAttach(\'" + _id + "\',\'" + _title + "\')\" src=\"../../images/delAttach.png\" />";
+					}
+					$('#attachList').html(html);
+					$('#attachList').show();
+				}
+			 });
 			 layedit.set({
 			  uploadImage: {
-				url: '/note/api/v1/upload/img',
+				url: '/note/api/v1/upload/file',
 				type: 'post'
 			  }
 			});
@@ -105,7 +163,8 @@
   </div>
    <div class="layui-form-item">
 	<label class="layui-form-label">附件</label>
-	<input lay-type="file" name="attach" class="layui-upload-file">
+	<input type="file" name="file" lay-type="file" class="layui-upload-file">
+	<div id="attachList" class="layui-input-block bor" style="display: none;"></div>
    </div>
   <div class="layui-form-item">
 	<div class="layui-input-block">
@@ -113,4 +172,5 @@
 	  <button onclick="reset()" type="reset" class="layui-btn layui-btn-primary">重置</button>
 	</div>
   </div>
+  </body>
 </html>
