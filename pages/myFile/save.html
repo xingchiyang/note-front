@@ -69,6 +69,14 @@
 			 if(r!=null)return  unescape(r[2]); return null;
 		}
 		function delAttach(attachId, attachTitle){
+			// 服务端删除附件
+			$.ajax({
+				  type: 'GET',
+				  url: "/note/api/v1/attach/remove/" + attachId,
+				  success: function(data){
+				  },
+				  contentType: "application/json;charset=utf-8"
+			});
 			var html = "";
 			var delIndex = -1;
 			$.each(attachList, function(index, value){
@@ -111,7 +119,7 @@
 			 var form = layui.form();
 			 layedit = layui.layedit;
 			 layui.upload({
-				url: '/note/api/v1/upload/file',
+				url: '/note/api/v1/attach/upload',
 				method: 'post',
 				before: function(input){
 			    },
@@ -136,7 +144,7 @@
 			 });
 			 layedit.set({
 			  uploadImage: {
-				url: '/note/api/v1/upload/file',
+				url: '/note/api/v1/attach/upload',
 				type: 'post'
 			  }
 			});
