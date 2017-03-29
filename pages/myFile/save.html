@@ -7,7 +7,7 @@
 	<script src="../../layui/layui.js"></script>
     <style type="text/css">
 		html,body{
-			height: 97%;
+			height: 100%;
 			width: 100%;
 			overflow-y: scroll;
 			overflow-x: scroll;
@@ -26,7 +26,6 @@
 			$("#title").val("");
 			layedit.setContent(index, "");
 			$('#attachList').html("");
-			debugger;
 			for(i in attachList){
 				removeAttach(attachList[i][0]);
 			}
@@ -91,18 +90,12 @@
 			var html = "";
 			var delIndex = -1;
 			$.each(attachList, function(index, value){
-			debugger;
 				var _id = value[0];
 				var _title = value[1];
 				if(_id == attachId){
 					delIndex = index;
 				} else {
 					html += getOneHtml(_id, _title);
-				/*
-					html += "&nbsp;&nbsp;";
-					html += "<span>" + _title + "</span>";
-					html += "<img onclick=\"delAttach(\'" + _id + "\',\'" + _title + "\')\" src=\"../../images/delAttach.png\" />";
-					*/
 				}
 			});
 			$('#attachList').html(html);
@@ -168,17 +161,11 @@
 					if($.inArray(new Array(id,title), attachList) == -1){
 						attachList.push(new Array(id, title));
 					}
-					debugger;
 					for (key in attachList) {
 						var attach = attachList[key];
 						var _id = attach[0];
 						var _title = attach[1];
 						html += getOneHtml(_id, _title);
-						/*
-						html += "&nbsp;&nbsp;";
-						html += "<span>" + _title + "</span>";
-						html += "<img onclick=\"delAttach(\'" + _id + "\',\'" + _title + "\')\" src=\"../../images/delAttach.png\" />";
-						*/
 					}
 					$('#attachList').html(html);
 					if(attachList.length > 0){
