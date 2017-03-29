@@ -25,6 +25,13 @@
 		function reset(){
 			$("#title").val("");
 			layedit.setContent(index, "");
+			$('#attachList').html("");
+			debugger;
+			for(i in attachList){
+				removeAttach(attachList[i][0]);
+			}
+			attachList.splice(0, attachList.length);
+			hideAttachList();
 		}
 		function doSubmit(){
 			var title = $("#title").val();
@@ -69,14 +76,7 @@
 			 if(r!=null)return  unescape(r[2]); return null;
 		}
 		function delAttach(attachId, attachTitle){
-			// 服务端删除附件
-			$.ajax({
-				  type: 'GET',
-				  url: "/note/api/v1/attach/remove/" + attachId,
-				  success: function(data){
-				  },
-				  contentType: "application/json;charset=utf-8"
-			});
+			removeAttach(attachId);
 			var html = "";
 			var delIndex = -1;
 			$.each(attachList, function(index, value){
@@ -90,13 +90,29 @@
 					html += "<img onclick=\"delAttach(\'" + _id + "\',\'" + _title + "\')\" src=\"../../images/delAttach.png\" />";
 				}
 			});
+			$('#attachList').html(html);
+			removeAttachFromList(delIndex);
+		}
+		function removeAttachFromList(delIndex){
 			if(delIndex != -1){
 				attachList.splice(delIndex, 1);
+				hideAttachList();
 			}
-			$('#attachList').html(html);
+		}
+		function hideAttachList(){
 			if(attachList.length == 0){
 				$('#attachList').hide();
 			}
+		}
+		function removeAttach(attachId){
+			// 服务端删除附件
+			$.ajax({
+				  type: 'GET',
+				  url: "/note/api/v1/attach/remove/" + attachId,
+				  success: function(data){
+				  },
+				  contentType: "application/json;charset=utf-8"
+			});
 		}
 	</script>
 	
