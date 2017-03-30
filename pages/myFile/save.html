@@ -22,6 +22,12 @@
     </style>
 	<script type="text/javascript">
 		var attachList = new Array();
+		function showTip(attachId){
+			layer.tips('点击下载文件', '#' + attachId, {
+				tips: 3,
+				time: 1000
+			});
+		}
 		function reset(){
 			$("#title").val("");
 			layedit.setContent(index, "");
@@ -125,8 +131,8 @@
 		function getOneHtml(_id, _title){
 			var html = "";
 			html += "&nbsp;&nbsp;";
-			html += "<span>" + _title + "</span>";
-			html += "<img onclick=\"delAttach(\'" + _id + "\',\'" + _title + "\')\" src=\"../../images/delAttach.png\" />";
+			html += "<a onmouseenter=\"showTip('" + _id + "')\" id='" + _id + "' target='_blank' href='/note/api/v1/attach/get?fileKey=" + _id + "&fileName=" + _title + "'>" + _title + "</a>";
+			html += "<img id='" + _id + "' onclick=\"delAttach(\'" + _id + "\',\'" + _title + "\')\" src=\"../../images/delAttach.png\" />";
 			return html;
 		}
 	</script>
@@ -191,7 +197,6 @@
 					  type: 'GET',
 					  url: "/note/api/v1/note/get/" + noteId,
 					  success: function(data){
-					  debugger;
 						$("#title").val(data.title);
 						layedit.setContent(index, data.content);
 						// 显示附件
