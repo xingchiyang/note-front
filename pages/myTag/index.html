@@ -3,8 +3,84 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>星驰笔记本</title>
+	<link rel="stylesheet" href="../../layui/css/layui.css" />
+	<script src="../../js/jquery.min.js"></script>
+	<script src="../../layui/layui.js"></script>
+	<style type="text/css">
+		.add_tag{
+			position: absolute;
+			top: 100px;
+			left: 400px;
+		}
+		.show_tag{
+			position: absolute;
+			top: 150px;
+			left: 200px;
+			width: 900px;
+		}
+	</style>
+	<script type="text/javascript">
+		layui.use(['layer'], function(){
+		  var layer = layui.layer;
+		});
+		function addTag(){
+			var tag = $('#tagInput').val();
+			if(tag.length == 0){
+				return;
+			}
+			// 调服务端接口
+			// 界面显示
+			var tagId = "tagId";
+			var editor = "<span onclick='updateTag(this)'>编辑</span>";
+			var del = "<span onclick='delTag(this)'>删除</span>";
+			var html = "<tr id=" + tagId + "><td>" + tag + "</td><td>" + editor + "&nbsp;&nbsp;&nbsp;&nbsp;"+ del +"</td></tr>";
+			$('tbody:eq(1)').prepend(html);
+		}
+		function updateTag(d){
+			var tagId = $(d).parent().parent()[0].id;
+			// 调服务端接口
+			layer.prompt({
+			  value: '',
+			  maxlength: 50,
+			  title: '请输入标签名',
+			}, function(value, index, elem){
+			  layer.close(index);
+			});
+		}
+		function delTag(d){
+			var tagId = $(d).parent().parent()[0].id;
+			// 调服务端接口
+		}
+	</script>
 </head>
 <body>
-tag
+	<table class="add_tag">
+		<tbody>
+			<tr>
+				<td><input id="tagInput" style="width: 400px;" required lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input"/></td>
+				<td><button name="tagAdd" onclick="addTag()" class="layui-btn">添加标签</button></td>
+			</tr>
+		</tbody>
+	</table>
+	<table class="layui-table show_tag">
+	  <colgroup>
+		<col width="200">
+		<col width="200">
+	  </colgroup>
+	  <thead>
+		<tr>
+		  <th>标签名</th>
+		  <th>操作</th>
+		</tr> 
+	  </thead>
+	  <tbody>
+	  <!--
+		<tr>
+		  <td>标签1</td>
+		  <td>编辑 删除</td>
+		</tr>
+		-->
+	  </tbody>
+	</table>
 </body>
 </html>
