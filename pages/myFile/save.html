@@ -41,7 +41,7 @@
 			var title = $("#title").val();
 			var htmlContent = layedit.getContent(index);
 			if($.trim(title).length == 0){
-				layer.tips('标题不能为空', 'title', {
+				layer.tips('标题不能为空', '#title', {
 					tips: 1
 				});
 				return;

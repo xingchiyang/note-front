@@ -23,34 +23,111 @@
 		layui.use(['layer'], function(){
 		  var layer = layui.layer;
 		});
+		$(function () {
+			// 标签列表显示
+			$.ajax({
+			  type: 'GET',
+			  url: "/note/api/v1/tag/query",
+			  success: function(data){
+				var tagList = data.data;
+				for (key in tagList) {
+					var tag = tagList[key];
+					$('tbody:eq(1)').prepend(showHtml(tag.id, tag.name));
+				}
+			  },
+			  contentType: "application/json;charset=utf-8"
+		  });
+		});
 		function addTag(){
-			var tag = $('#tagInput').val();
-			if(tag.length == 0){
+			var tagName = $('#tagInput').val();
+			if(tagName.length == 0){
 				return;
 			}
 			// 调服务端接口
-			// 界面显示
-			var tagId = "tagId";
-			var editor = "<span onclick='updateTag(this)'>编辑</span>";
-			var del = "<span onclick='delTag(this)'>删除</span>";
-			var html = "<tr id=" + tagId + "><td>" + tag + "</td><td>" + editor + "&nbsp;&nbsp;&nbsp;&nbsp;"+ del +"</td></tr>";
-			$('tbody:eq(1)').prepend(html);
+			var param = {
+				"name": tagName,
+				"type":2
+			};
+			var tagId = "";
+			$.ajax({
+				  type: 'POST',
+				  url: "/note/api/v1/tag/create",
+				  data: JSON.stringify(param),
+				  success: function(data){
+					tagId = data.id;
+					// 界面显示
+					$('tbody:eq(1)').prepend(showHtml(tagId, tagName));
+				  },
+				  error: function(XMLHttpRequest, textStatus, errorThrown){
+					if(XMLHttpRequest.status != 200){
+						layer.msg(XMLHttpRequest.responseJSON.message, {
+							icon: 5,
+							time: 1500
+						});
+					}
+				  },
+				  contentType: "application/json;charset=utf-8"
+			  });
 		}
 		function updateTag(d){
 			var tagId = $(d).parent().parent()[0].id;
-			// 调服务端接口
+			var tagName = $(d).parent().parent().children()[0].innerText;
 			layer.prompt({
 			  value: '',
 			  maxlength: 50,
 			  title: '请输入标签名',
 			}, function(value, index, elem){
-				// 界面显示
+				if(value != tagName){
+					// 调服务端接口
+					var param = {
+						"id": tagId,
+						"name": value,
+						"type": 2
+					};
+					$.ajax({
+					  type: 'POST',
+					  url: "/note/api/v1/tag/modify",
+					  data: JSON.stringify(param),
+					  success: function(data){
+						// 界面显示
+						$(d).parent().parent().children()[0].innerText = value;
+					  },
+					  error: function(XMLHttpRequest, textStatus, errorThrown){
+						if(XMLHttpRequest.status != 200){
+							layer.msg(XMLHttpRequest.responseJSON.message, {
+								icon: 5,
+								time: 1500
+							});
+						}
+					  },
+					  contentType: "application/json;charset=utf-8"
+					});
+					// 界面显示
+				}
 				layer.close(index);
 			});
 		}
 		function delTag(d){
-			var tagId = $(d).parent().parent()[0].id;
 			// 调服务端接口
+			var tagId = $(d).parent().parent()[0].id;
+			layer.confirm('是否删除标签?', {icon: 3, title:'提示'}, function(index){
+				$.ajax({
+				  type: 'GET',
+				  url: "/note/api/v1/tag/delete/" + tagId,
+				  success: function(data){
+					debugger;
+					$("tbody:eq(1) tr[id='" + tagId +  "']").remove();
+				  },
+				  contentType: "application/json;charset=utf-8"
+			  });
+			  layer.close(index);
+			});
+			
+		}
+		function showHtml(tagId, tagName){
+			var editor = "<span onclick='updateTag(this)'>编辑</span>";
+			var del = "<span onclick='delTag(this)'>删除</span>";
+			return "<tr id=" + tagId + "><td>" + tagName + "</td><td>" + editor + "&nbsp;&nbsp;&nbsp;&nbsp;"+ del +"</td></tr>";
 		}
 	</script>
 </head>
@@ -58,7 +135,7 @@
 	<table class="add_tag">
 		<tbody>
 			<tr>
-				<td><input id="tagInput" style="width: 400px;" required lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input"/></td>
+				<td><input id="tagInput" style="width: 400px;" required lay-verify="required" placeholder="请输入标签" autocomplete="off" class="layui-input"/></td>
 				<td><button name="tagAdd" onclick="addTag()" class="layui-btn">添加标签</button></td>
 			</tr>
 		</tbody>
@@ -75,12 +152,6 @@
 		</tr> 
 	  </thead>
 	  <tbody>
-	  <!--
-		<tr>
-		  <td>标签1</td>
-		  <td>编辑 删除</td>
-		</tr>
-		-->
 	  </tbody>
 	</table>
 </body>
