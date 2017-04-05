@@ -30,6 +30,10 @@
 		function reset(){
 			$("#title").val("");
 			layedit.setContent(index, "");
+			// 重置标签
+			debugger;
+			$('#tagList').html("");
+			initTags();
 			$('#attachList').html("");
 			for(i in attachList){
 				removeAttach(attachList[i][0]);
@@ -56,11 +60,23 @@
 				};
 				attachs.push(attach);
 			}
+			var tags = "";
+			var inputTags = $("#tagList input[name='tags']");
+			for(var i=0; i < inputTags.length; i++){
+				var inputTag = inputTags[i];
+				if(inputTag.checked){
+					if(tags.length > 0){
+						tags += ",";
+					}
+					tags += inputTag.value;
+				}
+			}
 			var data = {
 				"title": title,
 				"content": htmlContent,
 				"type": 1,
-				"attach": attachs
+				"attach": attachs,
+				"tags": tags
 			};
 			var url;
 			if(getQueryString("cmd") == "detail"){
@@ -144,6 +160,13 @@
 	  <input type="text" id="title" required style="width: 450px; margin-top: 10px;" lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
 	</div>
   </div>
+
+  <div class="layui-form-item">
+	<label class="layui-form-label">标签</label>
+	<div id="tagList" class="layui-input-block bor">
+	</div>
+  </div>
+  
   <div class="layui-form-item layui-form-text">
 	<label class="layui-form-label">内容</label>
 	<div class="layui-input-block" style="width: 70%;">
@@ -211,11 +234,70 @@
 							$('#attachList').html(html);
 							$('#attachList').show();
 						}
+						 // 显示标签
+						 $.ajax({
+							  type: 'GET',
+							  url: "/note/api/v1/tag/query?size=1000",
+							  success: function(tagData){
+								var tagList = tagData.data;
+								var noteTags = data.tags;
+								var noteTagsArr;
+								if(noteTags.length > 0){
+									noteTagsArr = noteTags.split(",");
+								}
+								for(key in tagList){
+									var tag = tagList[key];
+									var tagId = tag.id;
+									var tagName = tag.name;
+									var check = false;
+									if(noteTagsArr != null){
+										for(key in noteTagsArr){
+											var noteTag = noteTagsArr[key];
+											if(tagId == noteTag){
+												check = true;
+												break;
+											}
+										}
+									}
+									var checkboxHtml = getTagCheckbox(tagId, tagName, check);
+									$("#tagList").prepend(checkboxHtml);
+								}
+							  },
+							  contentType: "application/json;charset=utf-8"
+						});
 					  },
 					  contentType: "application/json;charset=utf-8"
 				});
+			 } else if(cmd == "new"){
+				initTags();
 			 }
 		});
+		function getTagCheckbox(tagId, tagName, check){
+			var html = "";
+			html = "<label><input type='checkbox' name='tags' value='" + tagId + "'";
+			if(check){
+			 html += " checked";
+			}
+			html += ">" + tagName + "</label>&nbsp;&nbsp;";
+			return html;
+		}
+		function initTags(){
+			$.ajax({
+				  type: 'GET',
+				  url: "/note/api/v1/tag/query?size=1000",
+				  success: function(tagData){
+					var tagList = tagData.data;
+					for(key in tagList){
+						var tag = tagList[key];
+						var tagId = tag.id;
+						var tagName = tag.name;
+						var checkboxHtml = getTagCheckbox(tagId, tagName, false);
+						$("#tagList").prepend(checkboxHtml);
+					}
+				  },
+				  contentType: "application/json;charset=utf-8"
+			});
+		}
 	</script>
 	</div>
   </div>
