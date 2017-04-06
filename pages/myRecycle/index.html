@@ -3,8 +3,117 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>星驰笔记本</title>
+	<style type="text/css">
+		html,body{  
+			height: 100%;  
+		}
+		#list{
+			float:left;
+			height:100%;
+			width:250px;
+			background:#FFFFFF;
+			overflow: auto;
+		}
+		#file{
+			height:100%;
+			margin-left: 255px;
+			background:#FFFFFF;
+		}
+	</style>
+	<link rel="stylesheet" href="../../layui/css/layui.css" />
+	<script src="../../js/jquery.min.js"></script>
+	<script src="../../js/jquery.contextMenu.js"></script>
+	<script src="../../jstree/jstree.min.js"></script>
+	<script src="../../layui/layui.js"></script>
+	<script>
+		layui.use(['layer'], function(){
+		  var layer = layui.layer;
+		}); 
+		$(function () {
+			Date.prototype.format = function (format) {
+				var o = {  
+					"M+": this.getMonth() + 1,  
+					"d+": this.getDate(),  
+					"h+": this.getHours(),  
+					"m+": this.getMinutes(),  
+					"s+": this.getSeconds(),  
+					"q+": Math.floor((this.getMonth() + 3) / 3),  
+					"S": this.getMilliseconds()  
+				}  
+				if (/(y+)/.test(format)) {  
+					format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));  
+				}  
+				for (var k in o) {  
+					if (new RegExp("(" + k + ")").test(format)) {  
+						format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));  
+					}  
+				}  
+				return format;  
+			} 
+			$.ajax({
+				  type: 'GET',
+				  url: "/note/api/v1/file/recycle",
+				  success: function(data){
+					var dirs = data.dirs;
+					var notes = data.notes;
+					if(dirs != null && dirs.length > 0){
+						for(key in dirs){
+							$('#list tbody').append(getDirHtml(dirs[key]));
+						}
+					}
+					if(notes != null && notes.length > 0){
+						for(key in notes){
+							$('#list tbody').append(getNoteHtml(notes[key]));
+						}
+					}
+					addListener();
+				  },
+				  contentType: "application/json;charset=utf-8"
+			});
+		function addListener(){
+			$('.file').contextMenu('myMenu', {
+				bindings: {
+					'resume': function(t) {
+						var id = t.id;
+					}
+				}
+			});
+		}
+		});
+		function getDirHtml(dir){
+			var html = "";
+			html += "<tr class='file' id='" + dir.id + "' fileType='dir'>";
+			html += "<td><img src='../../images/dir.png'/>&nbsp;" + dir.name + "</td>";
+			html += "<td>" + formatDate(dir.createTime) + "</td></tr>";
+			return html;
+		}
+		function getNoteHtml(note){
+			var html = "";
+			html += "<tr class='file' id='" + note.id + "' fileType='note'>";
+			html += "<td><img src='../../images/file.png'/>&nbsp;" + note.title + "</td>";
+			html += "<td>" + formatDate(note.createTime) + "</td></tr>";
+			return html;
+		}
+		function formatDate(time){
+			return new Date(time).format("yyyy-MM-dd");
+		}
+	</script>
 </head>
 <body>
-recycle
+	<div class="contextMenu" id="myMenu" style="display:none;">
+	  <ul>
+		<li id="resume">恢复</li>
+	  </ul>
+	</div>
+	
+	<div id="list">
+		<table class="layui-table" lay-even lay-skin="nob">
+		  <tbody></tbody>
+		</table>
+	</div>
+	
+	<div id="file">
+		<iframe id="detailNote" src="" scrolling="no"  height="100%" width="100%" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+	</div>
 </body>
 </html>
