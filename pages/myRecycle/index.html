@@ -74,7 +74,14 @@
 			$('.file').contextMenu('myMenu', {
 				bindings: {
 					'resume': function(t) {
-						var id = t.id;
+					debugger;
+						alert(t.id + "," + t.getAttribute("filetype"));
+					},
+					'delete': function(t) {
+						alert(t.id);
+					},
+					'deleteAll': function(t) {
+						alert(t.id);
 					}
 				}
 			});
@@ -82,14 +89,14 @@
 		});
 		function getDirHtml(dir){
 			var html = "";
-			html += "<tr class='file' id='" + dir.id + "' fileType='dir'>";
+			html += "<tr class='file' id='" + dir.id + "' filetype='dir'>";
 			html += "<td><img src='../../images/dir.png'/>&nbsp;" + dir.name + "</td>";
 			html += "<td>" + formatDate(dir.createTime) + "</td></tr>";
 			return html;
 		}
 		function getNoteHtml(note){
 			var html = "";
-			html += "<tr class='file' id='" + note.id + "' fileType='note'>";
+			html += "<tr class='file' id='" + note.id + "' filetype='note'>";
 			html += "<td><img src='../../images/file.png'/>&nbsp;" + note.title + "</td>";
 			html += "<td>" + formatDate(note.createTime) + "</td></tr>";
 			return html;
@@ -103,6 +110,8 @@
 	<div class="contextMenu" id="myMenu" style="display:none;">
 	  <ul>
 		<li id="resume">恢复</li>
+		<li id="delete">删除</li>
+		<li id="deleteAll">清空回收站</li>
 	  </ul>
 	</div>
 	
