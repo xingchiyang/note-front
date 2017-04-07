@@ -6,153 +6,71 @@
 	<link rel="stylesheet" href="../../layui/css/layui.css" />
 	<script src="../../js/jquery.min.js"></script>
 	<script src="../../layui/layui.js"></script>
+	<script src="../../js/dateUtil.js"></script>
 	<style type="text/css">
-		.add_tag{
-			position: absolute;
-			top: 100px;
-			left: 400px;
-		}
-		.show_tag{
-			position: absolute;
-			top: 150px;
-			left: 200px;
-			width: 900px;
-		}
 	</style>
 	<script type="text/javascript">
 		layui.use(['layer'], function(){
 		  var layer = layui.layer;
 		});
 		$(function () {
-			// 标签列表显示
 			$.ajax({
 			  type: 'GET',
-			  url: "/note/api/v1/tag/query",
+			  url: "/note/api/v1/attach/query",
 			  success: function(data){
-				var tagList = data.data;
-				for (key in tagList) {
-					var tag = tagList[key];
-					$('tbody:eq(1)').prepend(showHtml(tag.id, tag.name));
+				var attachs = data.data;
+				if(attachs != null && attachs.length > 0){
+					for(key in attachs){
+						var att = attachs[key];
+						var attachId = att.id;
+						var attachName = att.name;
+						var note = att.note;
+						var noteName = "";
+						if(note != null){
+							noteName = note.title;
+						}
+						var uploadTime = formatDate(att.uploadTime);
+						var size = att.size;
+						$('#list tbody').append(getHtml(attachId, attachName, noteName, uploadTime, size));
+					}
 				}
 			  },
 			  contentType: "application/json;charset=utf-8"
 		  });
 		});
-		function addTag(){
-			var tagName = $('#tagInput').val();
-			if(tagName.length == 0){
-				return;
-			}
-			// 调服务端接口
-			var param = {
-				"name": tagName,
-				"type":2
-			};
-			var tagId = "";
-			$.ajax({
-				  type: 'POST',
-				  url: "/note/api/v1/tag/create",
-				  data: JSON.stringify(param),
-				  success: function(data){
-					tagId = data.id;
-					// 界面显示
-					$('tbody:eq(1)').prepend(showHtml(tagId, tagName));
-				  },
-				  error: function(XMLHttpRequest, textStatus, errorThrown){
-					if(XMLHttpRequest.status != 200){
-						layer.msg(XMLHttpRequest.responseJSON.message, {
-							icon: 5,
-							time: 1500
-						});
-					}
-				  },
-				  contentType: "application/json;charset=utf-8"
-			  });
+		function formatDate(time){
+			return new Date(time).format("yyyy-MM-dd");
 		}
-		function updateTag(d){
-			var tagId = $(d).parent().parent()[0].id;
-			var tagName = $(d).parent().parent().children()[0].innerText;
-			layer.prompt({
-			  value: '',
-			  maxlength: 50,
-			  title: '请输入标签名',
-			}, function(value, index, elem){
-				if(value != tagName){
-					// 调服务端接口
-					var param = {
-						"id": tagId,
-						"name": value,
-						"type": 2
-					};
-					$.ajax({
-					  type: 'POST',
-					  url: "/note/api/v1/tag/modify",
-					  data: JSON.stringify(param),
-					  success: function(data){
-						// 界面显示
-						$(d).parent().parent().children()[0].innerText = value;
-					  },
-					  error: function(XMLHttpRequest, textStatus, errorThrown){
-						if(XMLHttpRequest.status != 200){
-							layer.msg(XMLHttpRequest.responseJSON.message, {
-								icon: 5,
-								time: 1500
-							});
-						}
-					  },
-					  contentType: "application/json;charset=utf-8"
-					});
-					// 界面显示
-				}
-				layer.close(index);
-			});
-		}
-		function delTag(d){
-			// 调服务端接口
-			var tagId = $(d).parent().parent()[0].id;
-			layer.confirm('是否删除标签?', {icon: 3, title:'提示'}, function(index){
-				$.ajax({
-				  type: 'GET',
-				  url: "/note/api/v1/tag/delete/" + tagId,
-				  success: function(data){
-					debugger;
-					$("tbody:eq(1) tr[id='" + tagId +  "']").remove();
-				  },
-				  contentType: "application/json;charset=utf-8"
-			  });
-			  layer.close(index);
-			});
-			
-		}
-		function showHtml(tagId, tagName){
-			var editor = "<span onclick='updateTag(this)'>编辑</span>";
-			var del = "<span onclick='delTag(this)'>删除</span>";
-			return "<tr id=" + tagId + "><td>" + tagName + "</td><td>" + editor + "&nbsp;&nbsp;&nbsp;&nbsp;"+ del +"</td></tr>";
+		function getHtml(attachId, attachName, noteName, uploadTime, size){
+			var html = "";
+			html += "<tr><td>" + attachName + "</td><td>" + noteName + "</td><td>" + uploadTime + "</td><td>" + size + " KB</td>";
+			html += "<td>下载 删除</td></tr>";
+			return html;
 		}
 	</script>
 </head>
 <body>
-	<table class="add_tag">
-		<tbody>
-			<tr>
-				<td><input id="tagInput" style="width: 400px;" required lay-verify="required" placeholder="请输入标签" autocomplete="off" class="layui-input"/></td>
-				<td><button name="tagAdd" onclick="addTag()" class="layui-btn">添加标签</button></td>
-			</tr>
-		</tbody>
-	</table>
-	<table class="layui-table show_tag">
+<div id="list">
+	<table class="layui-table">
 	  <colgroup>
-		<col width="200">
-		<col width="200">
+		<col width="30%">
+		<col width="30%">
+		<col width="10%">
+		<col width="10%">
+		<col width="20%">
 	  </colgroup>
 	  <thead>
 		<tr>
-		  <th>标签名</th>
+		  <th>附件名</th>
+		  <th>所在笔记</th>
+		  <th>上传时间</th>
+		  <th>大小</th>
 		  <th>操作</th>
 		</tr> 
 	  </thead>
 	  <tbody>
 	  </tbody>
 	</table>
+</div>
 </body>
 </html>
