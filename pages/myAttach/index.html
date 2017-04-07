@@ -51,15 +51,18 @@
 			return html;
 		}
 		function deleteAttach(attachId){
-			$.ajax({
-			  type: 'GET',
-			  url: "/note/api/v1/attach/remove/" + attachId,
-			  success: function(data){
-				$('#list tbody').html("");
-				loadList();
-			  },
-			  contentType: "application/json;charset=utf-8"
-		  });
+			layer.confirm('是否删除附件?', {icon: 3, title:'提示'}, function(index){
+				$.ajax({
+					  type: 'GET',
+					  url: "/note/api/v1/attach/remove/" + attachId,
+					  success: function(data){
+						$('#list tbody').html("");
+						loadList();
+					  },
+					  contentType: "application/json;charset=utf-8"
+				  });
+				layer.close(index);
+			});
 		}
 	</script>
 </head>
