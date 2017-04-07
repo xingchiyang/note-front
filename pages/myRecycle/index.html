@@ -50,9 +50,83 @@
 				}  
 				return format;  
 			} 
+			loadList();
+		});
+		function addListener(){
+			$('.file').contextMenu('myMenu', {
+				bindings: {
+					'resume': function(t) {
+						var id = t.id;
+						var filetype = t.getAttribute("filetype");
+						if(filetype == "dir"){
+							$.ajax({
+								  type: 'GET',
+								  url: "/note/api/v1/dir/resume/" + id,
+								  success: function(data){
+									refreshList();
+								  },
+								  contentType: "application/json;charset=utf-8"
+							});
+						} else if(filetype == "note"){
+							$.ajax({
+								  type: 'GET',
+								  url: "/note/api/v1/note/resume/" + id,
+								  success: function(data){
+									refreshList();
+								  },
+								  contentType: "application/json;charset=utf-8"
+							});
+						}
+					},
+					'delete': function(t) {
+						var id = t.id;
+						var filetype = t.getAttribute("filetype");
+						if(filetype == "dir"){
+							layer.confirm('是否删除目录?', {icon: 3, title:'提示'}, function(index){
+								$.ajax({
+									  type: 'GET',
+									  url: "/note/api/v1/dir/clear/" + id,
+									  success: function(data){
+										refreshList();
+									  },
+									  contentType: "application/json;charset=utf-8"
+								});
+								layer.close(index);
+							});
+						} else if(filetype == "note"){
+							layer.confirm('是否删除笔记?', {icon: 3, title:'提示'}, function(index){
+								$.ajax({
+									  type: 'GET',
+									  url: "/note/api/v1/note/clear/" + id,
+									  success: function(data){
+										refreshList();
+									  },
+									  contentType: "application/json;charset=utf-8"
+								});
+								layer.close(index);
+							});
+						}
+					},
+					'deleteAll': function(t) {
+						layer.confirm('回收站清空后无法恢复，是否继续?', {icon: 3, title:'提示'}, function(index){
+							$.ajax({
+								  type: 'GET',
+								  url: "/note/api/v1/file/recycle/empty",
+								  success: function(data){
+									refreshList();
+								  },
+								  contentType: "application/json;charset=utf-8"
+							});
+							layer.close(index);
+						});
+					}
+				}
+			});
+		}
+		function loadList(){
 			$.ajax({
 				  type: 'GET',
-				  url: "/note/api/v1/file/recycle",
+				  url: "/note/api/v1/file/recycle/query",
 				  success: function(data){
 					var dirs = data.dirs;
 					var notes = data.notes;
@@ -70,23 +144,11 @@
 				  },
 				  contentType: "application/json;charset=utf-8"
 			});
-		function addListener(){
-			$('.file').contextMenu('myMenu', {
-				bindings: {
-					'resume': function(t) {
-					debugger;
-						alert(t.id + "," + t.getAttribute("filetype"));
-					},
-					'delete': function(t) {
-						alert(t.id);
-					},
-					'deleteAll': function(t) {
-						alert(t.id);
-					}
-				}
-			});
 		}
-		});
+		function refreshList(){
+			$('#list tbody').html("");
+			loadList();
+		}
 		function getDirHtml(dir){
 			var html = "";
 			html += "<tr class='file' id='" + dir.id + "' filetype='dir'>";
