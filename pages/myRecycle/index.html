@@ -158,13 +158,16 @@
 		}
 		function getNoteHtml(note){
 			var html = "";
-			html += "<tr class='file' id='" + note.id + "' filetype='note'>";
+			html += "<tr class='file' onclick=\"showNote('" + note.id + "')\" id='" + note.id + "' filetype='note'>";
 			html += "<td><img src='../../images/file.png'/>&nbsp;" + note.title + "</td>";
 			html += "<td>" + formatDate(note.createTime) + "</td></tr>";
 			return html;
 		}
 		function formatDate(time){
 			return new Date(time).format("yyyy-MM-dd");
+		}
+		function showNote(noteId){
+			$("#detailNote")[0].src="./detail.html?id=" + noteId;
 		}
 	</script>
 </head>

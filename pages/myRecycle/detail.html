@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>星驰笔记本</title>
+	<link rel="stylesheet" href="../../layui/css/layui.css" />
+	<script src="../../js/jquery.min.js"></script>
+	<script src="../../layui/layui.js"></script>
+    <style type="text/css">
+		html,body{
+			height: 100%;
+			width: 100%;
+			overflow: auto;
+		}
+		.bor{
+			border:1px dashed #009688;
+			width: 500px;
+			height: 55px;
+			margin-top:10px;
+			overflow:auto;
+		}
+    </style>
+	<script type="text/javascript">
+		var attachList = new Array();
+		function getQueryString(name){
+			 var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+			 var r = window.location.search.substr(1).match(reg);
+			 if(r!=null)return  unescape(r[2]); return null;
+		}
+		function getOneHtml(_id, _title){
+			var html = "";
+			html += "&nbsp;&nbsp;";
+			html += "<span>" + _title + "</span>";
+			return html;
+		}
+	</script>
+	
+</head>
+<body>
+  <div class="layui-form-item">
+	<label class="layui-form-label">标题</label>
+	<div class="layui-input-block">
+	  <input type="text" id="title" required style="width: 450px; margin-top: 10px;" lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input" disabled>
+	</div>
+  </div>
+
+  <div class="layui-form-item">
+	<label class="layui-form-label">标签</label>
+	<div id="tagList" class="layui-input-block bor">
+	</div>
+  </div>
+  
+  <div class="layui-form-item layui-form-text">
+	<label class="layui-form-label">内容</label>
+	<div class="layui-input-block" style="width: 70%;">
+	  <textarea id="editor" style="display: none;" autofocus></textarea>
+	  <script type="text/javascript">
+		var layedit;
+		var index;
+		layui.use(['form', 'layedit'], function(){
+			 var form = layui.form();
+			 layedit = layui.layedit;
+			 index = layedit.build('editor', {
+				 height: 600
+			 });
+			 var id = getQueryString("id");
+				var noteId = id;
+				$.ajax({
+					  type: 'GET',
+					  url: "/note/api/v1/note/get/" + noteId,
+					  success: function(data){
+						$("#title").val(data.title);
+						layedit.setContent(index, data.content);
+						// 显示附件
+						var attachs = data.attach;
+						var html = "";
+						if(attachs.length > 0){
+							for(i in attachs){
+								var _id = attachs[i].id;
+								var _title = attachs[i].name;
+								attachList.push(new Array(_id, _title));
+								html += getOneHtml(_id, _title);
+							}
+							$('#attachList').html(html);
+							$('#attachList').show();
+						}
+						 // 显示标签
+						 $.ajax({
+							  type: 'GET',
+							  url: "/note/api/v1/tag/query?size=1000",
+							  success: function(tagData){
+								var tagList = tagData.data;
+								var noteTags = data.tags;
+								var noteTagsArr;
+								if(noteTags.length > 0){
+									noteTagsArr = noteTags.split(",");
+								}
+								for(key in tagList){
+									var tag = tagList[key];
+									var tagId = tag.id;
+									var tagName = tag.name;
+									var check = false;
+									if(noteTagsArr != null){
+										for(key in noteTagsArr){
+											var noteTag = noteTagsArr[key];
+											if(tagId == noteTag){
+												check = true;
+												break;
+											}
+										}
+									}
+									var checkboxHtml = getTagCheckbox(tagId, tagName, check);
+									$("#tagList").prepend(checkboxHtml);
+								}
+							  },
+							  contentType: "application/json;charset=utf-8"
+						});
+					  },
+					  contentType: "application/json;charset=utf-8"
+				});
+		});
+		function getTagCheckbox(tagId, tagName, check){
+			var html = "";
+			html = "<label><input type='checkbox' name='tags' value='" + tagId + "' disabled";
+			if(check){
+			 html += " checked";
+			}
+			html += ">" + tagName + "</label>&nbsp;&nbsp;";
+			return html;
+		}
+	</script>
+	</div>
+  </div>
+   <div class="layui-form-item">
+	<label class="layui-form-label">附件</label>
+	<div id="attachList" class="layui-input-block bor" style="display: none;"></div>
+   </div>
+  </body>
+</html>
