@@ -14,9 +14,12 @@
 		  var layer = layui.layer;
 		});
 		$(function () {
+			loadList();
+		});
+		function loadList(){
 			$.ajax({
 			  type: 'GET',
-			  url: "/note/api/v1/attach/query",
+			  url: "/note/api/v1/attach/query?size=1000",
 			  success: function(data){
 				var attachs = data.data;
 				if(attachs != null && attachs.length > 0){
@@ -37,15 +40,26 @@
 			  },
 			  contentType: "application/json;charset=utf-8"
 		  });
-		});
+		}
 		function formatDate(time){
 			return new Date(time).format("yyyy-MM-dd");
 		}
 		function getHtml(attachId, attachName, noteName, uploadTime, size){
 			var html = "";
 			html += "<tr><td>" + attachName + "</td><td>" + noteName + "</td><td>" + uploadTime + "</td><td>" + size + " KB</td>";
-			html += "<td>下载 删除</td></tr>";
+			html += "<td><a target=\"_blank\" href=\"/note/api/v1/attach/get?fileKey=" + attachId + "&fileName=" + attachName + "\">下载</a>&nbsp;&nbsp;<a onclick=\"deleteAttach('" + attachId + "')\">删除</a></td></tr>";
 			return html;
+		}
+		function deleteAttach(attachId){
+			$.ajax({
+			  type: 'GET',
+			  url: "/note/api/v1/attach/remove/" + attachId,
+			  success: function(data){
+				$('#list tbody').html("");
+				loadList();
+			  },
+			  contentType: "application/json;charset=utf-8"
+		  });
 		}
 	</script>
 </head>
