@@ -178,7 +178,7 @@
 			 var form = layui.form();
 			 layedit = layui.layedit;
 			 layui.upload({
-				url: '/note/api/v1/attach/upload',
+				url: '/note/api/v1/attach/upload?type=attach',
 				method: 'post',
 				before: function(input){
 			    },
@@ -204,7 +204,7 @@
 			 });
 			 layedit.set({
 			  uploadImage: {
-				url: '/note/api/v1/attach/upload',
+				url: '/note/api/v1/attach/upload?type=img',
 				type: 'post'
 			  }
 			});
