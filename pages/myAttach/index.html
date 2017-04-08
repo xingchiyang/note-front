@@ -19,7 +19,7 @@
 		function loadList(){
 			$.ajax({
 			  type: 'GET',
-			  url: "/note/api/v1/attach/query?size=1000",
+			  url: "/note/api/v1/attach/query?type=attach&size=1000",
 			  success: function(data){
 				var attachs = data.data;
 				if(attachs != null && attachs.length > 0){

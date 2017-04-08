@@ -133,15 +133,15 @@
 		function getDirHtml(dir){
 			var html = "";
 			html += "<tr class='file' onclick=\"showDir()\" id='" + dir.id + "' filetype='dir'>";
-			html += "<td><img src='../../images/dir.png'/>&nbsp;" + dir.name + "</td>";
-			html += "<td>" + formatDate(dir.createTime) + "</td></tr>";
+			html += "<td align=\"left\"><img src='../../images/dir.png'/>&nbsp;" + dir.name + "</td>";
+			html += "<td align=\"right\">" + formatDate(dir.createTime) + "</td></tr>";
 			return html;
 		}
 		function getNoteHtml(note){
 			var html = "";
 			html += "<tr class='file' onclick=\"showNote('" + note.id + "')\" id='" + note.id + "' filetype='note'>";
-			html += "<td><img src='../../images/file.png'/>&nbsp;" + note.title + "</td>";
-			html += "<td>" + formatDate(note.createTime) + "</td></tr>";
+			html += "<td align=\"left\"><img src='../../images/file.png'/>&nbsp;" + note.title + "</td>";
+			html += "<td align=\"right\">" + formatDate(note.createTime) + "</td></tr>";
 			return html;
 		}
 		function formatDate(time){
