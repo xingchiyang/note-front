@@ -21,6 +21,9 @@
 		var form = layui.form();
 		var layer = layui.layer;
 	}); 
+	function toRegister(){
+		window.location.href = "./register.html";
+	}
 </script>
 </head>
 <body>
@@ -41,7 +44,7 @@
 		<div class="layui-form-item">
 			<div class="layui-input-block">
 			  <button class="layui-btn">登录</button>
-			  <button class="layui-btn layui-btn-primary">注册</button>
+			  <button class="layui-btn layui-btn-primary" onclick="toRegister()">注册</button>
 			</div>
 		</div>
 	</div>

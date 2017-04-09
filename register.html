@@ -20,7 +20,55 @@
 	layui.use(['form','layer'], function(){
 		var form = layui.form();
 		var layer = layui.layer;
-	}); 
+	});
+	function register(){
+		var username = $("#username").val();
+		var passwd = $("#passwd").val();
+		var confirmPasswd = $("#confirmPasswd").val();
+		if($.trim(username).length == 0){
+			layer.tips('用户名不能为空', '#username', {
+				tips: 1
+			});
+			return;
+		}
+		if($.trim(passwd).length == 0){
+			layer.tips('密码不能为空', '#passwd', {
+				tips: 1
+			});
+			return;
+		}
+		if($.trim(confirmPasswd).length == 0){
+			layer.tips('确认密码不能为空', '#confirmPasswd', {
+				tips: 1
+			});
+			return;
+		}
+		if(passwd != confirmPasswd){
+			layer.tips('两次密码不相同', '#confirmPasswd', {
+				tips: 1
+			});
+			return;
+		}
+		var data = {
+			"username": username,
+			"passwd": passwd
+		};
+		$.ajax({
+			  type: 'POST',
+			  url: "/note/api/v1/user/create",
+			  data: JSON.stringify(data),
+			  success: function(){
+				window.location.href = "./login.html";
+			  },
+			  error: function (XMLHttpRequest, textStatus, errorThrown){
+				if(XMLHttpRequest.responseJSON.status != 200){
+					$("#msg").text("");
+					$("#msg").text(XMLHttpRequest.responseJSON.message);
+				}
+			  },
+			  contentType: "application/json;charset=utf-8"
+		});
+	}
 </script>
 </head>
 <body>
@@ -29,24 +77,24 @@
 		<div class="layui-form-item">
 			<label class="layui-form-label">用户名</label>
 			<div class="layui-input-block">
-			  <input type="text" name="username" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+			  <input type="text" id="username" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
 			</div>
 		</div>
 		<div class="layui-form-item">
 			<label class="layui-form-label">密码</label>
 			<div class="layui-input-block">
-			  <input type="password" name="passwd" required  lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+			  <input type="password" id="passwd" required  lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
 			</div>
 		</div>
 		<div class="layui-form-item">
 			<label class="layui-form-label">确认密码</label>
 			<div class="layui-input-block">
-			  <input type="password" name="confirmPasswd" required  lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+			  <input type="password" id="confirmPasswd" required  lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
 			</div>
 		</div>
 		<div class="layui-form-item">
 			<div class="layui-input-block">
-			  <button class="layui-btn">注册</button>
+			  <button class="layui-btn" onclick="register()">注册</button>&nbsp;&nbsp;<span id="msg" style="color:red;"/>
 			</div>
 		</div>
 	</div>
