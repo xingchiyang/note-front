@@ -55,6 +55,19 @@ html,body{
 	height: 100%;
 	margin-left: 10px;
 }
+#logoutName{
+	float: right;
+	text-align: center;
+	color: white; 
+	line-height: 50px;
+	height: 100%;
+	margin-right: 5px;
+}
+#logoutImg{
+	float: right;
+	margin-right: 5px;
+	margin-top: 13px;
+}
 </style>
 <link rel="stylesheet" href="layui/css/layui.css" />
 <script src="js/jquery.min.js"></script>
@@ -67,6 +80,16 @@ html,body{
 		var url = "./pages/" + page + "/index.html";
 		$('#iframe')[0].src = url;
 	}
+	function logout(){
+		$.ajax({
+		  type: 'POST',
+		  url: "/note/api/v1/system/logout",
+		  success: function(data){
+			window.location.href = "./login.html";
+		  },
+		  contentType: "application/json;charset=utf-8"
+	  });
+	}
 </script>
 </head>
  
@@ -74,6 +97,7 @@ html,body{
 <div id="Container">
     <div id="Header">
         <img id="logoImg" src="images/logo.png" /><span id="logoName">星驰笔记本</span>
+		<span id="logoutName" onclick="logout()">退出</span><img id="logoutImg" src="images/logout.png" />
     </div>
     <div id="Content">
         <div id="Content-Left">
