@@ -9,6 +9,8 @@
 		top: 30%;
 		left: 35%;
 		right: 40%;
+		border-style: ridge;
+		border-width: 1px;
 	}
 </style>
 <link rel="stylesheet" href="layui/css/layui.css" />
@@ -23,6 +25,7 @@
 </head>
 <body>
 	<div id="mainContain">
+		<div class="layui-form-item" style="text-align: center;font-size: 20px;color: white;background-color: #009688;">用户注册</div>
 		<div class="layui-form-item">
 			<label class="layui-form-label">用户名</label>
 			<div class="layui-input-block">
@@ -33,6 +36,12 @@
 			<label class="layui-form-label">密码</label>
 			<div class="layui-input-block">
 			  <input type="password" name="passwd" required  lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">确认密码</label>
+			<div class="layui-input-block">
+			  <input type="password" name="confirmPasswd" required  lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
 			</div>
 		</div>
 		<div class="layui-form-item">
