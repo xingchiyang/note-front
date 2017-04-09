@@ -24,6 +24,41 @@
 	function toRegister(){
 		window.location.href = "./register.html";
 	}
+	function login(){
+		var username = $("#username").val();
+		var passwd = $("#passwd").val();
+		if($.trim(username).length == 0){
+			layer.tips('用户名不能为空', '#username', {
+				tips: 1
+			});
+			return;
+		}
+		if($.trim(passwd).length == 0){
+			layer.tips('密码不能为空', '#passwd', {
+				tips: 1
+			});
+			return;
+		}
+		var data = {
+			"username": username,
+			"passwd": passwd
+		};
+		$.ajax({
+			  type: 'POST',
+			  url: "/note/api/v1/system/login",
+			  data: JSON.stringify(data),
+			  success: function(){
+				window.location.href = "./main.html";
+			  },
+			  error: function (XMLHttpRequest, textStatus, errorThrown){
+				if(XMLHttpRequest.responseJSON.status != 200){
+					$("#msg").text("");
+					$("#msg").text(XMLHttpRequest.responseJSON.message);
+				}
+			  },
+			  contentType: "application/json;charset=utf-8"
+		});
+	}
 </script>
 </head>
 <body>
@@ -32,19 +67,19 @@
 		<div class="layui-form-item">
 			<label class="layui-form-label">用户名</label>
 			<div class="layui-input-block">
-			  <input type="text" name="username" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+			  <input type="text" id="username" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
 			</div>
 		</div>
 		<div class="layui-form-item">
 			<label class="layui-form-label">密码</label>
 			<div class="layui-input-block">
-			  <input type="password" name="passwd" required  lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+			  <input type="password" id="passwd" required  lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
 			</div>
 		</div>
 		<div class="layui-form-item">
 			<div class="layui-input-block">
-			  <button class="layui-btn">登录</button>
-			  <button class="layui-btn layui-btn-primary" onclick="toRegister()">注册</button>
+			  <button class="layui-btn" onclick="login()">登录</button>
+			  <button class="layui-btn layui-btn-primary" onclick="toRegister()">注册</button><span id="msg" style="color:red;"/>
 			</div>
 		</div>
 	</div>
