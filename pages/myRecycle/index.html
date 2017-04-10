@@ -26,6 +26,7 @@
 	<script src="../../jstree/jstree.min.js"></script>
 	<script src="../../layui/layui.js"></script>
 	<script src="../../js/dateUtil.js"></script>
+	<script src="../../js/requestUtil.js"></script>
 	<script>
 		layui.use(['layer'], function(){
 		  var layer = layui.layer;
@@ -40,23 +41,13 @@
 						var id = t.id;
 						var filetype = t.getAttribute("filetype");
 						if(filetype == "dir"){
-							$.ajax({
-								  type: 'GET',
-								  url: "/note/api/v1/dir/resume/" + id,
-								  success: function(data){
-									refreshList();
-								  },
-								  contentType: "application/json;charset=utf-8"
-							});
+							doGet("/note/api/v1/dir/resume/" + id, function(data){
+								refreshList();
+							  }, null);
 						} else if(filetype == "note"){
-							$.ajax({
-								  type: 'GET',
-								  url: "/note/api/v1/note/resume/" + id,
-								  success: function(data){
-									refreshList();
-								  },
-								  contentType: "application/json;charset=utf-8"
-							});
+							doGet("/note/api/v1/note/resume/" + id, function(data){
+								refreshList();
+							  }, null);
 						}
 					},
 					'delete': function(t) {
@@ -64,40 +55,25 @@
 						var filetype = t.getAttribute("filetype");
 						if(filetype == "dir"){
 							layer.confirm('是否删除目录?', {icon: 3, title:'提示'}, function(index){
-								$.ajax({
-									  type: 'GET',
-									  url: "/note/api/v1/dir/clear/" + id,
-									  success: function(data){
-										refreshList();
-									  },
-									  contentType: "application/json;charset=utf-8"
-								});
+								doGet("/note/api/v1/dir/clear/" + id, function(data){
+									refreshList();
+								  }, null);
 								layer.close(index);
 							});
 						} else if(filetype == "note"){
 							layer.confirm('是否删除笔记?', {icon: 3, title:'提示'}, function(index){
-								$.ajax({
-									  type: 'GET',
-									  url: "/note/api/v1/note/clear/" + id,
-									  success: function(data){
-										refreshList();
-									  },
-									  contentType: "application/json;charset=utf-8"
-								});
+								doGet("/note/api/v1/note/clear/" + id, function(data){
+									refreshList();
+								  }, null);
 								layer.close(index);
 							});
 						}
 					},
 					'deleteAll': function(t) {
 						layer.confirm('回收站清空后无法恢复，是否继续?', {icon: 3, title:'提示'}, function(index){
-							$.ajax({
-								  type: 'GET',
-								  url: "/note/api/v1/file/recycle/empty",
-								  success: function(data){
-									refreshList();
-								  },
-								  contentType: "application/json;charset=utf-8"
-							});
+							doGet("/note/api/v1/file/recycle/empty", function(data){
+								refreshList();
+							  }, null);
 							layer.close(index);
 						});
 					}
@@ -105,26 +81,21 @@
 			});
 		}
 		function loadList(){
-			$.ajax({
-				  type: 'GET',
-				  url: "/note/api/v1/file/recycle/query",
-				  success: function(data){
-					var dirs = data.dirs;
-					var notes = data.notes;
-					if(dirs != null && dirs.length > 0){
-						for(key in dirs){
-							$('#list tbody').append(getDirHtml(dirs[key]));
-						}
+			doGet("/note/api/v1/file/recycle/query", function(data){
+				var dirs = data.dirs;
+				var notes = data.notes;
+				if(dirs != null && dirs.length > 0){
+					for(key in dirs){
+						$('#list tbody').append(getDirHtml(dirs[key]));
 					}
-					if(notes != null && notes.length > 0){
-						for(key in notes){
-							$('#list tbody').append(getNoteHtml(notes[key]));
-						}
+				}
+				if(notes != null && notes.length > 0){
+					for(key in notes){
+						$('#list tbody').append(getNoteHtml(notes[key]));
 					}
-					addListener();
-				  },
-				  contentType: "application/json;charset=utf-8"
-			});
+				}
+				addListener();
+			  }, null);
 		}
 		function refreshList(){
 			$('#list tbody').html("");

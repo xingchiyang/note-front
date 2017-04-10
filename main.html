@@ -73,6 +73,7 @@ html,body{
 <link rel="shortcut icon" href="./images/logo.ico" type="image/x-icon" />
 <script src="js/jquery.min.js"></script>
 <script src="layui/layui.js"></script>
+<script src="js/requestUtil.js"></script>
 <script>
 	layui.use(['element'], function(){
 	  var element = layui.element();
@@ -82,14 +83,9 @@ html,body{
 		$('#iframe')[0].src = url;
 	}
 	function logout(){
-		$.ajax({
-		  type: 'POST',
-		  url: "/note/api/v1/system/logout",
-		  success: function(data){
+		doPost('/note/api/v1/system/logout', null, function(data){
 			window.location.href = "./login.html";
-		  },
-		  contentType: "application/json;charset=utf-8"
-	  });
+		  }, null);
 	}
 </script>
 </head>

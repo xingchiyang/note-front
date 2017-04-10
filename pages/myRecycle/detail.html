@@ -5,6 +5,7 @@
 	<link rel="stylesheet" href="../../layui/css/layui.css" />
 	<script src="../../js/jquery.min.js"></script>
 	<script src="../../layui/layui.js"></script>
+	<script src="../../js/requestUtil.js"></script>
     <style type="text/css">
 		html,body{
 			height: 100%;
@@ -64,58 +65,48 @@
 			 });
 			 var id = getQueryString("id");
 				var noteId = id;
-				$.ajax({
-					  type: 'GET',
-					  url: "/note/api/v1/note/get/" + noteId,
-					  success: function(data){
-						$("#title").val(data.title);
-						layedit.setContent(index, data.content);
-						// 显示附件
-						var attachs = data.attach;
-						var html = "";
-						if(attachs.length > 0){
-							for(i in attachs){
-								var _id = attachs[i].id;
-								var _title = attachs[i].name;
-								attachList.push(new Array(_id, _title));
-								html += getOneHtml(_id, _title);
-							}
-							$('#attachList').html(html);
+				doGet("/note/api/v1/note/get/" + noteId, function(data){
+					$("#title").val(data.title);
+					layedit.setContent(index, data.content);
+					// 显示附件
+					var attachs = data.attach;
+					var html = "";
+					if(attachs.length > 0){
+						for(i in attachs){
+							var _id = attachs[i].id;
+							var _title = attachs[i].name;
+							attachList.push(new Array(_id, _title));
+							html += getOneHtml(_id, _title);
 						}
-						 // 显示标签
-						 $.ajax({
-							  type: 'GET',
-							  url: "/note/api/v1/tag/query?size=1000",
-							  success: function(tagData){
-								var tagList = tagData.data;
-								var noteTags = data.tags;
-								var noteTagsArr;
-								if(noteTags.length > 0){
-									noteTagsArr = noteTags.split(",");
-								}
-								for(key in tagList){
-									var tag = tagList[key];
-									var tagId = tag.id;
-									var tagName = tag.name;
-									var check = false;
-									if(noteTagsArr != null){
-										for(key in noteTagsArr){
-											var noteTag = noteTagsArr[key];
-											if(tagId == noteTag){
-												check = true;
-												break;
-											}
-										}
+						$('#attachList').html(html);
+					}
+					 // 显示标签
+					 doGet("/note/api/v1/tag/query?size=1000", function(tagData){
+						var tagList = tagData.data;
+						var noteTags = data.tags;
+						var noteTagsArr;
+						if(noteTags.length > 0){
+							noteTagsArr = noteTags.split(",");
+						}
+						for(key in tagList){
+							var tag = tagList[key];
+							var tagId = tag.id;
+							var tagName = tag.name;
+							var check = false;
+							if(noteTagsArr != null){
+								for(key in noteTagsArr){
+									var noteTag = noteTagsArr[key];
+									if(tagId == noteTag){
+										check = true;
+										break;
 									}
-									var checkboxHtml = getTagCheckbox(tagId, tagName, check);
-									$("#tagList").prepend(checkboxHtml);
 								}
-							  },
-							  contentType: "application/json;charset=utf-8"
-						});
-					  },
-					  contentType: "application/json;charset=utf-8"
-				});
+							}
+							var checkboxHtml = getTagCheckbox(tagId, tagName, check);
+							$("#tagList").prepend(checkboxHtml);
+						}
+					  }, null);
+				  }, null);
 		});
 		function getTagCheckbox(tagId, tagName, check){
 			var html = "";

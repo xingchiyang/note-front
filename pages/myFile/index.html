@@ -25,6 +25,7 @@
 	<script src="../../js/jquery.min.js"></script>
 	<script src="../../jstree/jstree.min.js"></script>
 	<script src="../../layui/layui.js"></script>
+	<script src="../../js/requestUtil.js"></script>
 	<script>
 		layui.use(['layer'], function(){
 		  var layer = layui.layer;
@@ -134,14 +135,7 @@
 					"name": value,
 					"parentId": obj.id == "j1_1" ? null : obj.id
 				};
-			  $.ajax({
-					  type: 'POST',
-					  url: "/note/api/v1/dir/create",
-					  data: JSON.stringify(param),
-					  success: function(){
-					  },
-					  contentType: "application/json;charset=utf-8"
-			  });
+				doPost('/note/api/v1/dir/create', param, null, null);;
 			  layer.close(index);
 			  refreshTree();
 			});    
@@ -157,42 +151,26 @@
 			  maxlength: 50,
 			  title: '请输入目录名',
 			}, function(value, index, elem){
-			   $.ajax({
-				  type: 'GET',
-				  url: "/note/api/v1/dir/rename?id=" + obj.id + "&newName=" + value,
-				  success: function(){
-				  },
-				  contentType: "application/json;charset=utf-8"
-			  });
-			  refreshTree();
-			  layer.close(index);
+				doGet("/note/api/v1/dir/rename?id=" + obj.id + "&newName=" + value, null, null);
+				refreshTree();
+				layer.close(index);
 			});
 		  }
 		  function delDir (data){
 			layer.confirm('是否删除目录?', {icon: 3, title:'提示'}, function(index){
 				var obj = getNodeObj(data);
-				$.ajax({
-					  type: 'GET',
-					  url: "/note/api/v1/dir/remove/" + obj.id,
-					  success: function(){
+				doGet("/note/api/v1/dir/remove/" + obj.id, function(){
 						refreshTree();
-					  },
-					  contentType: "application/json;charset=utf-8"
-				});
+					  }, null);
 			  layer.close(index);
 			});
 		  }
 		  function delNote(data){
 			var obj = getNodeObj(data);
 			layer.confirm('是否删除笔记?', {icon: 3, title:'提示'}, function(index){
-			  $.ajax({
-				  type: 'GET',
-				  url: "/note/api/v1/note/delete/" + obj.id,
-				  success: function(){
+			  doGet("/note/api/v1/note/delete/" + obj.id, function(){
 					refreshTree();
-				  },
-				  contentType: "application/json;charset=utf-8"
-			  });
+				  }, null);
 			  layer.close(index);
 			});
 		  }

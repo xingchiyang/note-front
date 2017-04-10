@@ -7,6 +7,7 @@
 	<script src="../../js/jquery.min.js"></script>
 	<script src="../../layui/layui.js"></script>
 	<script src="../../js/dateUtil.js"></script>
+	<script src="../../js/requestUtil.js"></script>
 	<style type="text/css">
 	</style>
 	<script type="text/javascript">
@@ -17,10 +18,7 @@
 			loadList();
 		});
 		function loadList(){
-			$.ajax({
-			  type: 'GET',
-			  url: "/note/api/v1/attach/query?type=attach&size=1000",
-			  success: function(data){
+			doGet('/note/api/v1/attach/query?type=attach&size=1000', function(data){
 				var attachs = data.data;
 				if(attachs != null && attachs.length > 0){
 					for(key in attachs){
@@ -37,9 +35,7 @@
 						$('#list tbody').append(getHtml(attachId, attachName, noteName, uploadTime, size));
 					}
 				}
-			  },
-			  contentType: "application/json;charset=utf-8"
-		  });
+			  }, null);
 		}
 		function formatDate(time){
 			return new Date(time).format("yyyy-MM-dd");
@@ -52,15 +48,10 @@
 		}
 		function deleteAttach(attachId){
 			layer.confirm('是否删除附件?', {icon: 3, title:'提示'}, function(index){
-				$.ajax({
-					  type: 'GET',
-					  url: "/note/api/v1/attach/remove/" + attachId,
-					  success: function(data){
+				doGet("/note/api/v1/attach/remove/" + attachId, function(data){
 						$('#list tbody').html("");
 						loadList();
-					  },
-					  contentType: "application/json;charset=utf-8"
-				  });
+					  }, null);
 				layer.close(index);
 			});
 		}

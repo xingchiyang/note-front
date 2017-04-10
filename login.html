@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="layui/css/layui.css" />
 <script src="js/jquery.min.js"></script>
 <script src="layui/layui.js"></script>
+<script src="js/requestUtil.js"></script>
 <script>
 	layui.use(['form','layer'], function(){
 		var form = layui.form();
@@ -43,20 +44,15 @@
 			"username": username,
 			"passwd": passwd
 		};
-		$.ajax({
-			  type: 'POST',
-			  url: "/note/api/v1/system/login",
-			  data: JSON.stringify(data),
-			  success: function(){
-				window.location.href = "./main.html";
-			  },
-			  error: function (XMLHttpRequest, textStatus, errorThrown){
-				if(XMLHttpRequest.responseJSON.status != 200){
-					$("#msg").text("");
-					$("#msg").text(XMLHttpRequest.responseJSON.message);
-				}
-			  },
-			  contentType: "application/json;charset=utf-8"
+		doPost('/note/api/v1/system/login', data, function(){
+		debugger;
+			window.location.href = "./main.html";
+		}, function(XMLHttpRequest, textStatus, errorThrown){
+		debugger;
+			if(XMLHttpRequest.responseJSON.status != 200){
+				$("#msg").text("");
+				$("#msg").text(XMLHttpRequest.responseJSON.message);
+			}
 		});
 	}
 </script>
