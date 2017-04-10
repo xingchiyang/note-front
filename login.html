@@ -45,10 +45,8 @@
 			"passwd": passwd
 		};
 		doPost('/note/api/v1/system/login', data, function(){
-		debugger;
 			window.location.href = "./main.html";
 		}, function(XMLHttpRequest, textStatus, errorThrown){
-		debugger;
 			if(XMLHttpRequest.responseJSON.status != 200){
 				$("#msg").text("");
 				$("#msg").text(XMLHttpRequest.responseJSON.message);

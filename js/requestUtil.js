@@ -8,7 +8,7 @@ function doPost(url, data, successCallback, errorCallback){
 				successCallback(data);
 		  },
 		  error: function (XMLHttpRequest, textStatus, errorThrown){
-			if(XMLHttpRequest.responseJSON.status != 200 && XMLHttpRequest.responseJSON.message == "请先登录"){
+			if(XMLHttpRequest.responseJSON.message == "请先登录"){
 				window.top.location.href = "/login.html";
 			}
 			if(errorCallback != null)
@@ -27,7 +27,7 @@ function doGet(url, successCallback, errorCallback){
 				successCallback(data);
 		  },
 		  error: function (XMLHttpRequest, textStatus, errorThrown){
-			if(XMLHttpRequest.responseJSON.status != 200 && XMLHttpRequest.responseJSON.message == "请先登录"){
+			if(XMLHttpRequest.responseJSON.message == "请先登录"){
 				window.top.location.href = "/login.html";
 			}
 			if(errorCallback != null)

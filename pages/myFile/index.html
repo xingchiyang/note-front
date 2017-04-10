@@ -95,10 +95,15 @@
 					},
 					"check_callback" : true,
 					'data' : {
-						  'url' : '/note/api/v1/file/query',
-						  'data' : function (node) {
+						'url' : '/note/api/v1/file/query',
+						'data' : function (node) {
 							return { 'id' : node.id };
-						 }
+						},
+						'error': function(p1){
+							if(p1.responseJSON.message == "请先登录"){
+								window.top.location.href = "/login.html";
+							}
+						}
 					  }
 				},
 				"plugins" : [ "contextmenu","dnd", "types" ], 
