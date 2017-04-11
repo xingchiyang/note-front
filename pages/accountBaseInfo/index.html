@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>星驰笔记本</title>
+	<link rel="stylesheet" href="../../layui/css/layui.css" />
+	<script src="../../js/jquery.min.js"></script>
+	<script src="../../layui/layui.js"></script>
+	<script src="../../js/requestUtil.js"></script>
+	<style type="text/css">
+		.user-info{
+			width:358px;
+		}
+	</style>
+	<script type="text/javascript">
+		layui.use(['form'], function(){
+		  var form = layui.form();
+		});
+		$(function () {
+			doGet('/note/api/v1/user/get', function(data){
+				$('#username').val(data.username);
+				$('#name').val(data.name);
+				$('#email').val(data.email);
+				$('#telephone').val(data.telephone);
+				$('#apikey').val(data.apikey);
+			}, null);
+		});
+		function pasteApikey(){
+			debugger;
+			var apikey = $('#apikey').val();
+			
+		}
+		function update(){
+		
+		}
+	</script>
+</head>
+<body>
+	<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+	  <legend>基本信息</legend>
+	</fieldset>
+	<div class="layui-form-item user-info">
+		<label class="layui-form-label">用户名</label>
+		<div class="layui-input-block user-info">
+		  <input type="text" id="username" lay-verify="title" autocomplete="off"  class="layui-input" disabled>
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">名称</label>
+		<div class="layui-input-block user-info">
+		  <input type="text" id="name" lay-verify="title" autocomplete="off"  class="layui-input">
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">邮箱</label>
+		<div class="layui-input-block user-info">
+		  <input type="text" id="email" lay-verify="title" autocomplete="off"  class="layui-input">
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">电话</label>
+		<div class="layui-input-block user-info">
+		  <input type="text" id="telephone" lay-verify="title" autocomplete="off"  class="layui-input">
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<div class="layui-inline">
+			<label class="layui-form-label">apikey</label>
+			<div class="layui-input-inline" style="width: 270px;">
+			  <input type="text" id="apikey" lay-verify="title" autocomplete="off"  class="layui-input" disabled>
+			</div>
+		</div>
+		<div class="layui-inline">
+			<button class="layui-btn" onclick="pasteApikey()" style="background-color: gray; color: white;">复制</button>
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<div class="layui-input-block">
+		  <button class="layui-btn" style="width: 358px;" onclick="update()">保存</button>
+		</div>
+	 </div>
+</body>
+</html>
