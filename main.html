@@ -55,7 +55,7 @@ html,body{
 	height: 100%;
 	margin-left: 10px;
 }
-#logout{
+#logout, #userInfo{
 	float: right;
 	text-align: center;
 	color: white; 
@@ -70,6 +70,14 @@ html,body{
 <script src="layui/layui.js"></script>
 <script src="js/requestUtil.js"></script>
 <script>
+	$(function () {
+		getUserInfo();
+	});
+	function getUserInfo(){
+		doGet('/note/api/v1/user/get', function(data){
+			$('#userInfo').text(data.username)
+		}, null);
+	}
 	layui.use(['element'], function(){
 	  var element = layui.element();
 	}); 
@@ -89,7 +97,7 @@ html,body{
 <div id="Container">
     <div id="Header">
         <img id="logoImg" src="images/logo.png" /><span id="logoName">星驰笔记本</span>
-		<span id="logout" onclick="logout()"><img src="images/logout.png" />&nbsp;退出</span>
+		<span id="logout" onclick="logout()"><img src="images/logout.png" />&nbsp;退出</span><span id="userInfo"></span>
     </div>
     <div id="Content">
         <div id="Content-Left">
