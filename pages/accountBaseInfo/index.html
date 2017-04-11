@@ -7,6 +7,7 @@
 	<script src="../../js/jquery.min.js"></script>
 	<script src="../../layui/layui.js"></script>
 	<script src="../../js/requestUtil.js"></script>
+	<script src="../../js/clipboard.min.js"></script>
 	<style type="text/css">
 		.user-info{
 			width:358px;
@@ -24,14 +25,28 @@
 				$('#telephone').val(data.telephone);
 				$('#apikey').val(data.apikey);
 			}, null);
+			var clipboard = new Clipboard('#btn');
+			clipboard.on('success', function(e) {
+				layer.msg("复制成功", {
+					time: 1000
+				});
+			});
 		});
-		function pasteApikey(){
-			debugger;
-			var apikey = $('#apikey').val();
-			
-		}
 		function update(){
-		
+			debugger;
+			var name = $('#name').val();
+			var email = $('#email').val();
+			var telephone = $('#telephone').val();
+			var data = {
+				"name": name,
+				"email": email,
+				"telephone": telephone
+			};
+			doPost('/note/api/v1/user/modify', data, function(){
+				layer.msg("保存成功", {
+					time: 1000
+				});
+			}, null);
 		}
 	</script>
 </head>
@@ -67,11 +82,11 @@
 		<div class="layui-inline">
 			<label class="layui-form-label">apikey</label>
 			<div class="layui-input-inline" style="width: 270px;">
-			  <input type="text" id="apikey" lay-verify="title" autocomplete="off"  class="layui-input" disabled>
+			  <input type="text" readonly id="apikey" lay-verify="title" autocomplete="off"  class="layui-input">
 			</div>
 		</div>
 		<div class="layui-inline">
-			<button class="layui-btn" onclick="pasteApikey()" style="background-color: gray; color: white;">复制</button>
+			<button id="btn" class="layui-btn" data-clipboard-action="copy" data-clipboard-target="#apikey" style="background-color: gray; color: white;">复制</button>
 		</div>
 	</div>
 	<div class="layui-form-item">
