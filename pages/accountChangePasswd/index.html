@@ -16,29 +16,30 @@
 		layui.use(['form'], function(){
 		  var form = layui.form();
 		});
-		$(function () {
-			doGet('/note/api/v1/user/get', function(data){
-				$('#username').val(data.username);
-				$('#name').val(data.name);
-				$('#email').val(data.email);
-				$('#telephone').val(data.telephone);
-				$('#apikey').val(data.apikey);
-			}, null);
-		});
-		function update(){
-			var name = $('#name').val();
-			var email = $('#email').val();
-			var telephone = $('#telephone').val();
-			var data = {
-				"name": name,
-				"email": email,
-				"telephone": telephone
-			};
-			doPost('/note/api/v1/user/modify', data, function(){
-				layer.msg("保存成功", {
-					time: 1000
+		function updateLogin(){
+		debugger;
+			var loginOldPasswd = $('#loginOldPasswd').val();
+			var loginNewPasswd = $('#loginNewPasswd').val();
+			var loginConfirmPasswd = $('#loginConfirmPasswd').val();
+			if(!checkNotNull(loginOldPasswd, 'loginOldPasswd')) return;
+			if(!checkNotNull(loginNewPasswd, 'loginNewPasswd')) return;
+			if(!checkNotNull(loginConfirmPasswd, 'loginConfirmPasswd')) return;
+			if(loginNewPasswd != loginConfirmPasswd){
+				layer.tips('两次密码不相同', '#loginConfirmPasswd', {
+					tips: 2
 				});
-			}, null);
+			}
+			// 调接口
+		}
+		function checkNotNull(passwd, pos){
+			if($.trim(passwd).length == 0){
+				pos = '#' + pos;
+				layer.tips('密码不能为空', pos, {
+					tips: 2
+				});
+				return false;
+			}
+			return true;
 		}
 	</script>
 </head>
