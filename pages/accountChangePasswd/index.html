@@ -16,6 +16,16 @@
 		layui.use(['form'], function(){
 		  var form = layui.form();
 		});
+		$(function () {
+			doGet('/note/api/v1/user/get', function(data){
+				var readKey = data.readKey;
+				if(readKey != null){
+					$('#hasPasswd').show();
+				} else {
+					$('#noPasswd').show();
+				}
+			}, null);
+		});
 		function updateLogin(){
 			var loginOldPasswd = $('#loginOldPasswd').val();
 			var loginNewPasswd = $('#loginNewPasswd').val();
@@ -27,6 +37,7 @@
 				layer.tips('两次密码不相同', '#loginConfirmPasswd', {
 					tips: 2
 				});
+				return;
 			}
 			var data = {
 				"type": 1,
@@ -55,6 +66,7 @@
 				layer.tips('两次密码不相同', '#readConfirmPasswd', {
 					tips: 2
 				});
+				return;
 			}
 			var data = {
 				"type": 2,
@@ -81,6 +93,26 @@
 				return false;
 			}
 			return true;
+		}
+		function setReadKey(){
+			var readKey = $('#readKey').val();
+			if($.trim(readKey).length == 0){
+				layer.tips('密码不能为空', '#readKey', {
+					tips: 3
+				});
+				return;
+			}
+			var data = {
+				"type": 2,
+				"newPasswd": readKey
+			};
+			doPost('/note/api/v1/user/passwd/change', data, function(){
+				layer.msg("设置成功", {
+					time: 1000
+				});
+				$('#noPasswd').hide();
+				$('#hasPasswd').show();
+			});
 		}
 	</script>
 </head>
@@ -114,27 +146,40 @@
 	<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
 	  <legend>修改阅读密码</legend>
 	</fieldset>
-	<div class="layui-form-item">
-		<label class="layui-form-label">旧密码</label>
-		<div class="layui-input-block passwd-info">
-		  <input type="password" id="readOldPasswd" lay-verify="title" autocomplete="off"  class="layui-input">
+	<div id="noPasswd" class="layui-form-item" style="display: none">
+		<div class="layui-inline">
+			<label class="layui-form-label">阅读密码</label>
+			<div class="layui-input-inline" style="width: 242px;">
+			  <input type="password" id="readKey" lay-verify="title" autocomplete="off"  class="layui-input">
+			</div>
+		</div>
+		<div class="layui-inline">
+			<button id="setReadKey" onclick="setReadKey()" class="layui-btn">设置密码</button>
 		</div>
 	</div>
-	<div class="layui-form-item">
-		<label class="layui-form-label">新密码</label>
-		<div class="layui-input-block passwd-info">
-		  <input type="password" id="readNewPasswd" lay-verify="title" autocomplete="off"  class="layui-input">
+	<div id="hasPasswd" style="display: none">
+		<div class="layui-form-item">
+			<label class="layui-form-label">旧密码</label>
+			<div class="layui-input-block passwd-info">
+			  <input type="password" id="readOldPasswd" lay-verify="title" autocomplete="off"  class="layui-input">
+			</div>
 		</div>
-	</div>
-	<div class="layui-form-item">
-		<label class="layui-form-label">确认密码</label>
-		<div class="layui-input-block passwd-info">
-		  <input type="password" id="readConfirmPasswd" lay-verify="title" autocomplete="off"  class="layui-input">
+		<div class="layui-form-item">
+			<label class="layui-form-label">新密码</label>
+			<div class="layui-input-block passwd-info">
+			  <input type="password" id="readNewPasswd" lay-verify="title" autocomplete="off"  class="layui-input">
+			</div>
 		</div>
-	</div>
-	<div class="layui-form-item">
-		<div class="layui-input-block">
-		  <button class="layui-btn" style="width: 358px;" onclick="updateRead()">保存</button>
+		<div class="layui-form-item">
+			<label class="layui-form-label">确认密码</label>
+			<div class="layui-input-block passwd-info">
+			  <input type="password" id="readConfirmPasswd" lay-verify="title" autocomplete="off"  class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+			  <button class="layui-btn" style="width: 358px;" onclick="updateRead()">保存</button>
+			</div>
 		</div>
 	</div>
 </body>
