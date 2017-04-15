@@ -96,8 +96,12 @@
 					"check_callback" : true,
 					'data' : {
 						'url' : '/note/api/v1/file/query',
+						'type': 'post',
 						'data' : function (node) {
-							return { 'id' : node.id };
+							var data = {
+								'data': {'id' : node.id }
+							};
+							return data;
 						},
 						'error': function(p1){
 							if(p1.responseJSON.message == "请先登录"){
