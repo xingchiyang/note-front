@@ -98,7 +98,7 @@
 						'url' : '/note/api/v1/file/query',
 						'type': 'post',
 						'data' : function (node) {
-							var id = node.id = '%23' ? "" : node.id;
+							var id = (node.id == '#') ? "" : node.id;
 							return "id=" + id;
 						},
 						'error': function(p1){

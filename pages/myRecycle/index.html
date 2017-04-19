@@ -80,6 +80,9 @@
 				}
 			});
 		}
+		function refreshDetailNote(){
+			$("#detailNote")[0].src="";
+		}
 		function loadList(){
 			doGet("/note/api/v1/file/recycle/query", function(data){
 				var dirs = data.dirs;
@@ -100,6 +103,7 @@
 		function refreshList(){
 			$('#list tbody').html("");
 			loadList();
+			refreshDetailNote();
 		}
 		function getDirHtml(dir){
 			var html = "";

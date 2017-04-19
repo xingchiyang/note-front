@@ -204,7 +204,7 @@
 			 var id = getQueryString("id");
 			 if(cmd == "detail"){
 				var noteId = id;
-				doGet("/note/api/v1/note/get/" + noteId, function(data){
+				doPost("/note/api/v1/note/get/" + noteId, null, function(data){
 					$("#title").val(data.title);
 					layedit.setContent(index, data.content);
 					// 显示附件
