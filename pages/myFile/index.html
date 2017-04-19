@@ -98,10 +98,8 @@
 						'url' : '/note/api/v1/file/query',
 						'type': 'post',
 						'data' : function (node) {
-							var data = {
-								'data': {'id' : node.id }
-							};
-							return data;
+							var id = node.id = '%23' ? "" : node.id;
+							return "id=" + id;
 						},
 						'error': function(p1){
 							if(p1.responseJSON.message == "请先登录"){
