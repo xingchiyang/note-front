@@ -122,8 +122,17 @@
 				var node = data.node;
 				if(typeof(node)!="undefined"){
 					var isDir = node.a_attr.isDir;
+					var status = node.a_attr.status;
 					if(!isDir){
-						$("#detailNote")[0].src="./save.html?cmd=detail&id=" + data.node.id;
+						if(status == 3){
+							$("#detailNote")[0].src="./save.html?type=note&cmd=detail&id=" + data.node.id;
+						} else {
+							$("#detailNote")[0].src="./save.html?cmd=detail&id=" + data.node.id;
+						}
+					} else {
+						if(status == 3){
+							$("#detailNote")[0].src="./save.html?type=dir&id=" + data.node.id;
+						}
 					}
 				}
 			});
@@ -187,6 +196,10 @@
 		  }
 		  function refreshTree(){
 			$('#tree').jstree("refresh");
+		  }
+		  function callRefreshTree(data){
+			$('#tree').jstree(true).settings.core.data = data;
+			refreshTree();
 		  }
 	</script>
 </head>

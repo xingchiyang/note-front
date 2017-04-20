@@ -19,6 +19,11 @@
 			margin-top:10px;
 			overflow:auto;
 		}
+		#unLockContent{
+			position: absolute;
+			top: 20%;
+			left: 15%;
+		}
     </style>
 	<script type="text/javascript">
 		var attachList = new Array();
@@ -32,7 +37,6 @@
 			$("#title").val("");
 			layedit.setContent(index, "");
 			// 重置标签
-			debugger;
 			$('#tagList').html("");
 			initTags();
 			$('#attachList').html("");
@@ -96,11 +100,6 @@
 				});
 			  }, null);
 		}
-		function getQueryString(name){
-			 var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-			 var r = window.location.search.substr(1).match(reg);
-			 if(r!=null)return  unescape(r[2]); return null;
-		}
 		function delAttach(attachId, attachTitle){
 			removeAttach(attachId);
 			var html = "";
@@ -139,10 +138,50 @@
 			html += "<img id='" + _id + "' onclick=\"delAttach(\'" + _id + "\',\'" + _title + "\')\" src=\"../../images/delAttach.png\" />";
 			return html;
 		}
+		function unLock(){
+			var readKey = $('#readKey').val();
+			var type = getQueryString("type");
+			var id = getQueryString("id");
+			if($.trim(readKey).length == 0){
+				layer.tips('密码不能为空', '#readKey', {
+					tips: 3
+				});
+				return;
+			}
+			var data = {
+				"readKey": readKey
+			}
+			doPost('/note/api/v1/user/passwd/readKey/check', data, function(){
+				if(type == "note"){
+					init(true);
+				} else if(type == "dir"){
+					var d = "id=" + id + ";readKey=" + readKey;
+					doPostNoJson('/note/api/v1/file/query', d, function(treeData){
+						window.parent.callRefreshTree(treeData);
+					},null);
+				}
+			}, function(p1){
+				layer.msg(p1.responseJSON.message, {
+				  icon: 5,
+				  time: 1500
+				});
+			});
+		}
 	</script>
 	
 </head>
 <body>
+<div id="unLockContent" style="display: none;">
+	<div class="layui-inline">
+		<div class="layui-input-inline" style="width: 242px;">
+		  <input type="password" id="readKey" lay-verify="title" autocomplete="off" placeholder="请输入阅读密码" class="layui-input">
+		</div>
+	</div>
+	<div class="layui-inline">
+		<button id="unLock" onclick="unLock()" class="layui-btn">解锁</button>
+	</div>
+</div>
+<div id="showContent" style="display: none;">
   <div class="layui-form-item">
 	<label class="layui-form-label">标题</label>
 	<div class="layui-input-block">
@@ -163,94 +202,114 @@
 	  <script type="text/javascript">
 		var layedit;
 		var index;
-		layui.use(['form', 'layedit', 'upload'], function(){
-			 var form = layui.form();
-			 layedit = layui.layedit;
-			 layui.upload({
-				url: '/note/api/v1/attach/upload?type=attach',
-				method: 'post',
-				before: function(input){
-			    },
-				success: function(res){
-					var html = "";
-					var id = res.data.id;
-					var title = res.data.title;
-					if($.inArray(new Array(id,title), attachList) == -1){
-						attachList.push(new Array(id, title));
-					}
-					for (key in attachList) {
-						var attach = attachList[key];
-						var _id = attach[0];
-						var _title = attach[1];
-						html += getOneHtml(_id, _title);
-					}
-					$('#attachList').html(html);
-					if(attachList.length > 0){
-						$('#attachList').show();
-					}
-					
-				}
-			 });
-			 layedit.set({
-			  uploadImage: {
-				url: '/note/api/v1/attach/upload?type=img',
-				type: 'post'
-			  }
-			});
-			 index = layedit.build('editor', {
-				 height: 600
-			 });
-			 var cmd = getQueryString("cmd");
-			 var id = getQueryString("id");
-			 if(cmd == "detail"){
-				var noteId = id;
-				doPost("/note/api/v1/note/get/" + noteId, null, function(data){
-					$("#title").val(data.title);
-					layedit.setContent(index, data.content);
-					// 显示附件
-					var attachs = data.attach;
-					var html = "";
-					if(attachs.length > 0){
-						for(i in attachs){
-							var _id = attachs[i].id;
-							var _title = attachs[i].name;
-							attachList.push(new Array(_id, _title));
+		$(function () {
+			init();
+		});
+		function init(show){
+			layui.use(['form', 'layedit', 'upload'], function(){
+				 var form = layui.form();
+				 layedit = layui.layedit;
+				 // 检查是否需要密码
+				 var type = getQueryString("type");
+				 if(type == null) show = true;
+				 if(!show){
+					$('#showContent').hide();
+					$('#unLockContent').show();
+					return;
+				 } else {
+					$('#unLockContent').hide();
+					$('#showContent').show();
+				 }
+				 
+				 layui.upload({
+					url: '/note/api/v1/attach/upload?type=attach',
+					method: 'post',
+					before: function(input){
+					},
+					success: function(res){
+						var html = "";
+						var id = res.data.id;
+						var title = res.data.title;
+						if($.inArray(new Array(id,title), attachList) == -1){
+							attachList.push(new Array(id, title));
+						}
+						for (key in attachList) {
+							var attach = attachList[key];
+							var _id = attach[0];
+							var _title = attach[1];
 							html += getOneHtml(_id, _title);
 						}
 						$('#attachList').html(html);
-						$('#attachList').show();
-					}
-					 // 显示标签
-					 doGet("/note/api/v1/tag/query?size=1000", function(tagData){
-						var tagList = tagData.data;
-						var noteTags = data.tags;
-						var noteTagsArr;
-						if(noteTags.length > 0){
-							noteTagsArr = noteTags.split(",");
+						if(attachList.length > 0){
+							$('#attachList').show();
 						}
-						for(key in tagList){
-							var tag = tagList[key];
-							var tagId = tag.id;
-							var tagName = tag.name;
-							var check = false;
-							if(noteTagsArr != null){
-								for(key in noteTagsArr){
-									var noteTag = noteTagsArr[key];
-									if(tagId == noteTag){
-										check = true;
-										break;
+						
+					}
+				 });
+				 layedit.set({
+				  uploadImage: {
+					url: '/note/api/v1/attach/upload?type=img',
+					type: 'post'
+				  }
+				});
+				 index = layedit.build('editor', {
+					 height: 600
+				 });
+				 var cmd = getQueryString("cmd");
+				 var id = getQueryString("id");
+				 if(cmd == "detail"){
+					var noteId = id;
+					var data = {
+						"readKey": $('#readKey').val()
+					}
+					doPost("/note/api/v1/note/get/" + noteId, data, function(data){
+						$("#title").val(data.title);
+						layedit.setContent(index, data.content);
+						// 显示附件
+						var attachs = data.attach;
+						var html = "";
+						if(attachs.length > 0){
+							for(i in attachs){
+								var _id = attachs[i].id;
+								var _title = attachs[i].name;
+								attachList.push(new Array(_id, _title));
+								html += getOneHtml(_id, _title);
+							}
+							$('#attachList').html(html);
+							$('#attachList').show();
+						}
+						 // 显示标签
+						 doGet("/note/api/v1/tag/query?size=1000", function(tagData){
+							var tagList = tagData.data;
+							var noteTags = data.tags;
+							var noteTagsArr;
+							if(noteTags.length > 0){
+								noteTagsArr = noteTags.split(",");
+							}
+							for(key in tagList){
+								var tag = tagList[key];
+								var tagId = tag.id;
+								var tagName = tag.name;
+								var check = false;
+								if(noteTagsArr != null){
+									for(key in noteTagsArr){
+										var noteTag = noteTagsArr[key];
+										if(tagId == noteTag){
+											check = true;
+											break;
+										}
 									}
 								}
+								var checkboxHtml = getTagCheckbox(tagId, tagName, check);
+								$("#tagList").prepend(checkboxHtml);
 							}
-							var checkboxHtml = getTagCheckbox(tagId, tagName, check);
-							$("#tagList").prepend(checkboxHtml);
-						}
+						  }, null);
 					  }, null);
-				  }, null);
-			 } else if(cmd == "new"){
-				initTags();
-			 }
-		});
+				 } else if(cmd == "new"){
+					initTags();
+				 }
+			});
+		}
 		function getTagCheckbox(tagId, tagName, check){
 			var html = "";
 			html = "<label><input type='checkbox' name='tags' value='" + tagId + "'";
@@ -285,6 +344,7 @@
 	  <button onclick="doSubmit()" class="layui-btn">保存</button>
 	  <button onclick="reset()" type="reset" class="layui-btn layui-btn-primary">重置</button>
 	</div>
+  </div>
   </div>
   </body>
 </html>
