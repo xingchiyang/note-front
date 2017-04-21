@@ -1,5 +1,11 @@
 ##效果演示
 ![登录](https://github.com/xingchiyang/note/blob/master/doc/images/%E7%99%BB%E5%BD%95.gif)
+![创建文件](https://github.com/xingchiyang/note/blob/master/doc/images/%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6.gif)
+![标签](https://github.com/xingchiyang/note/blob/master/doc/images/%E6%A0%87%E7%AD%BE.gif)
+![附件](https://github.com/xingchiyang/note/blob/master/doc/images/%E9%99%84%E4%BB%B6.gif)
+![回收站](https://github.com/xingchiyang/note/blob/master/doc/images/%E5%9B%9E%E6%94%B6%E7%AB%99.gif)
+![文件加锁](https://github.com/xingchiyang/note/blob/master/doc/images/%E6%96%87%E4%BB%B6%E5%8A%A0%E9%94%81.gif)
+![文件解锁](https://github.com/xingchiyang/note/blob/master/doc/images/%E6%96%87%E4%BB%B6%E8%A7%A3%E9%94%81.gif)
 
 ##项目说明
 ####名称
