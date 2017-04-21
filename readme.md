@@ -1,3 +1,6 @@
+##效果演示
+![登录](https://github.com/xingchiyang/note/blob/master/doc/images/%E7%99%BB%E5%BD%95.gif)
+
 ##项目说明
 ####名称
 星驰笔记本（前端）
