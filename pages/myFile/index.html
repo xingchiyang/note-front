@@ -72,6 +72,22 @@
 						action: function(obj){
 							delNote(obj);
 						}
+					},
+					lockFile: {
+						label: "加锁",
+						icon: "../../images/lockFile.png",
+						separator_after: true,
+						action: function(obj){
+							lockFile(obj);
+						}
+					},
+					unLockFile: {
+						label: "解锁",
+						icon: "../../images/unLockFile.png",
+						separator_after: true,
+						action: function(obj){
+							unLockFile(obj);
+						}
 					}
 				}
 				var isDir = node.a_attr.isDir;
@@ -80,11 +96,19 @@
 					if(node.id == "j1_1"){
 						delete items.reNameDir;
 					}
+					delete items.lockFile;
+					delete items.unLockFile;
 				 } else {
 					delete items.newDir;
 					delete items.deleteDir;
 					delete items.newNote;
 					delete items.reNameDir;
+					var status = node.a_attr.status;
+					if(status == 3){
+						delete items.lockFile;
+					} else {
+						delete items.unLockFile;
+					}
 				 }
 				return items;
 			}
@@ -140,6 +164,34 @@
 				 console.info(data);
 			})
 		  });
+		  function unLockFile(data){
+			var obj = getNodeObj(data);
+			layer.prompt({
+			  formType: 1,
+			  value: '',
+			  maxlength: 50,
+			  title: '请输入阅读密码',
+			}, function(value, index, elem){
+				var param = {
+					"readKey": value
+				};
+				doPost('/note/api/v1/file/readKey/cancel?fileType=1&fileId=' + obj.id, param, function(){
+					refreshTree();
+				}, function(p1){
+					layer.msg(p1.responseJSON.message, {
+					  icon: 5,
+					  time: 1500
+					});
+				});
+			  layer.close(index);
+			});    
+		  }
+		  function lockFile(data){
+			var obj = getNodeObj(data);
+			doGet('/note/api/v1/file/readKey/set?fileType=1&fileId=' + obj.id, function(){
+				refreshTree();
+			}, null);
+		  }
 		  function addDir(data){
 			var obj = getNodeObj(data);
 			layer.prompt({
@@ -200,6 +252,8 @@
 		  function callRefreshTree(data){
 			$('#tree').jstree(true).settings.core.data = data;
 			refreshTree();
+			//var node = $('#tree').jstree(true).get_node(data.id);
+			//$('#tree').jstree(true).refresh_node(node);
 		  }
 	</script>
 </head>
