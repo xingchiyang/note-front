@@ -73,7 +73,7 @@
 						"name": value,
 						"type": 2
 					};
-					doPost("/note/api/v1/tag/modify", function(data){
+					doPost("/note/api/v1/tag/modify", param, function(data){
 						// 界面显示
 						$(d).parent().parent().children()[0].innerText = value;
 					  }, function(XMLHttpRequest, textStatus, errorThrown){
