@@ -41,21 +41,19 @@
 		  var layer = layui.layer;
 		}); 
 		$(function () {
-			$('#search').bind('keypress', function (event) {
-				if (event.keyCode == "13") {
-					var searchKey = $('#search').val();
-					if($.trim(searchKey).length == 0){
-						doPost('/note/api/v1/file/query', 'id=', function(data){
-							$('#tree').jstree(true).settings.core.data = data;
-							refreshTree();
-						});
-						return;
-					}
-					doGet('/note/api/v1/file/search?key=' + searchKey, function(data){
+			$('#search').bind('input oninput', function (event) {
+				var searchKey = $('#search').val();
+				if($.trim(searchKey).length == 0){
+					doPost('/note/api/v1/file/query', 'id=', function(data){
 						$('#tree').jstree(true).settings.core.data = data;
 						refreshTree();
-					}, null);
+					});
+					return;
 				}
+				doGet('/note/api/v1/file/search?key=' + searchKey, function(data){
+					$('#tree').jstree(true).settings.core.data = data;
+					refreshTree();
+				}, null);
 			});
 			function getMenu(node){
 				var items = {
