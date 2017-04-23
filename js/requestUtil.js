@@ -57,6 +57,26 @@ function doGet(url, successCallback, errorCallback){
 	});
 }
 
+function doGetAsync(url, async, successCallback, errorCallback){
+	$.ajax({
+		  type: 'GET',
+		  url: url,
+		  async: async,
+		  success: function(data){
+			if(successCallback != null)
+				successCallback(data);
+		  },
+		  error: function (XMLHttpRequest, textStatus, errorThrown){
+			if(XMLHttpRequest.responseJSON.message == "请先登录"){
+				window.top.location.href = "/login.html";
+			}
+			if(errorCallback != null)
+				errorCallback(XMLHttpRequest, textStatus, errorThrown);
+		  },
+		  contentType: "application/json;charset=utf-8"
+	});
+}
+
 function getQueryString(name){
 	 var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
 	 var r = window.location.search.substr(1).match(reg);

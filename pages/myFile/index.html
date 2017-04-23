@@ -97,6 +97,7 @@
 						separator_after: false,
 						action: function(obj){
 							delNote(obj);
+							refreshNoteContent();
 						}
 					},
 					lockFile: {
@@ -130,11 +131,19 @@
 					delete items.newNote;
 					delete items.reNameDir;
 					var status = node.a_attr.status;
-					if(status == 3){
-						delete items.lockFile;
-					} else {
-						delete items.unLockFile;
-					}
+					doGetAsync('/note/api/v1/user/get', false, function(data){
+						var readKey = data.readKey;
+						if(readKey == null){
+							delete items.lockFile;
+							delete items.unLockFile;
+						} else  {
+							if(status == 3){
+								delete items.lockFile;
+							} else {
+								delete items.unLockFile;
+							}
+						}
+					}, null);
 				 }
 				return items;
 			}
@@ -280,6 +289,9 @@
 			refreshTree();
 			//var node = $('#tree').jstree(true).get_node(data.id);
 			//$('#tree').jstree(true).refresh_node(node);
+		  }
+		  function refreshNoteContent(){
+			$("#detailNote")[0].src="";
 		  }
 	</script>
 </head>
