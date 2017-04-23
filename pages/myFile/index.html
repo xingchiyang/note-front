@@ -6,12 +6,22 @@
 		html,body{  
 			height: 100%;  
 		}
-		#tree{
+		#treeContent{
 			float:left;
 			height:100%;
 			width:250px;
 			background:#FFFFFF;
 			overflow: auto;
+		}
+		#search{
+			width: 100%;
+			padding-left: 20px;
+			border-radius: 5px;
+			height: 25px;
+			background-image: url(../../images/search.png);
+			background-repeat: no-repeat;
+			border-color: #E8E8E8;
+			background-position: left center;
 		}
 		#note{
 			height:100%;
@@ -31,6 +41,22 @@
 		  var layer = layui.layer;
 		}); 
 		$(function () {
+			$('#search').bind('keypress', function (event) {
+				if (event.keyCode == "13") {
+					var searchKey = $('#search').val();
+					if($.trim(searchKey).length == 0){
+						doPost('/note/api/v1/file/query', 'id=', function(data){
+							$('#tree').jstree(true).settings.core.data = data;
+							refreshTree();
+						});
+						return;
+					}
+					doGet('/note/api/v1/file/search?key=' + searchKey, function(data){
+						$('#tree').jstree(true).settings.core.data = data;
+						refreshTree();
+					}, null);
+				}
+			});
 			function getMenu(node){
 				var items = {
 					newDir: {
@@ -258,7 +284,10 @@
 	</script>
 </head>
 <body>
-	<div id="tree"></div>
+	<div id="treeContent" class="layui-form-item">
+		<input type="text" id="search" placeholder="请输入标题/标签名">
+		<div id="tree"></div>
+	</div>
 	<div id="note">
 		<iframe id="detailNote" src="" scrolling="no"  height="100%" width="100%" frameborder="0" marginheight="0" marginwidth="0"></iframe>
 	</div>
