@@ -14,7 +14,7 @@
 			overflow: auto;
 		}
 		#search{
-			width: 100%;
+			width: 226px;
 			padding-left: 20px;
 			border-radius: 5px;
 			height: 25px;
@@ -22,6 +22,12 @@
 			background-repeat: no-repeat;
 			border-color: #E8E8E8;
 			background-position: left center;
+		}
+		#clean{
+			position: absolute;
+			left: 229px;
+			z-index: 2;
+			top: 7px;
 		}
 		#note{
 			height:100%;
@@ -40,20 +46,29 @@
 		layui.use(['layer'], function(){
 		  var layer = layui.layer;
 		}); 
+		function cleanSearch(){
+			$('#search').val("");
+			getRootDataAndFresh();
+		}
+		function getRootDataAndFresh(){
+			doPost('/note/api/v1/file/query', 'id=', function(data){
+				$('#tree').jstree(true).settings.core.data = data;
+				refreshTree();
+			});
+		}
 		$(function () {
-			$('#search').bind('input oninput', function (event) {
-				var searchKey = $('#search').val();
-				if($.trim(searchKey).length == 0){
-					doPost('/note/api/v1/file/query', 'id=', function(data){
+			$('#search').bind('keypress', function (event) {
+				if (event.keyCode == "13") {
+					var searchKey = $('#search').val();
+					if($.trim(searchKey).length == 0){
+						getRootDataAndFresh();
+						return;
+					}
+					doGet('/note/api/v1/file/search?key=' + searchKey, function(data){
 						$('#tree').jstree(true).settings.core.data = data;
 						refreshTree();
-					});
-					return;
+					}, null);
 				}
-				doGet('/note/api/v1/file/search?key=' + searchKey, function(data){
-					$('#tree').jstree(true).settings.core.data = data;
-					refreshTree();
-				}, null);
 			});
 			function getMenu(node){
 				var items = {
@@ -295,7 +310,7 @@
 </head>
 <body>
 	<div id="treeContent" class="layui-form-item">
-		<input type="text" id="search" placeholder="请输入标题/标签名">
+		<input type="text" id="search" placeholder="请输入标题/标签名"><img id="clean" onclick="cleanSearch()" src="../../images/clean.png"/>
 		<div id="tree"></div>
 	</div>
 	<div id="note">
