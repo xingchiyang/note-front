@@ -29,14 +29,10 @@
 目录加锁需求
 目录加密时，点左边的向下小箭头就能弹出密码输入框=
 删除文件后右边框不刷新
-没有阅读密码时，会有加密过程
+没有阅读密码时，会有加密图标
 
 ####需求管理
-附件管理
-内容搜索框
-笔记加密解密功能
-用户管理
-用户信息
+内容搜索框（根据标签或者笔记标题进行搜索）
 支持导出（pdf/word格式）
 发送邮件
 语音输入
@@ -49,11 +45,7 @@ openapi接口提供（apikey）
 
 ####参考资料
 > jstree
-* 【菜单】http://blog.csdn.net/ceoshun/article/details/38658853
+* http://blog.csdn.net/ceoshun/article/details/38658853
 * http://www.cnblogs.com/luozhihao/p/4679050.html
-> 百度UEditor
-* http://fex.baidu.com/ueditor
-> wangeditor
-* http://www.kancloud.cn/wangfupeng/wangeditor2
 > layui
 * http://www.layui.com/doc/modules/upload.html
