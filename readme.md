@@ -1,4 +1,4 @@
-##效果演示
+## 效果演示
 ![登录](https://github.com/xingchiyang/note/blob/master/doc/images/%E7%99%BB%E5%BD%95.gif)
 ![创建文件](https://github.com/xingchiyang/note/blob/master/doc/images/%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6.gif)
 ![标签](https://github.com/xingchiyang/note/blob/master/doc/images/%E6%A0%87%E7%AD%BE.gif)
@@ -7,13 +7,13 @@
 ![文件加锁](https://github.com/xingchiyang/note/blob/master/doc/images/%E6%96%87%E4%BB%B6%E5%8A%A0%E9%94%81.gif)
 ![文件解锁](https://github.com/xingchiyang/note/blob/master/doc/images/%E6%96%87%E4%BB%B6%E8%A7%A3%E9%94%81.gif)
 
-##项目说明
-####名称
+## 项目说明
+#### 名称
 星驰笔记本（前端）
-####特点
+#### 特点
 * 纯html,js,css实现
 
-####待解决的问题
+#### 待解决的问题
 导航树拖拽问题
 部分数据分页
 接口增加描述、制作html文档apidoc
@@ -31,7 +31,7 @@
 附件大小有问题
 没有标签时显示无
 
-####需求管理
+#### 需求管理
 提供一份说明文档
 支持导出（pdf/word格式）
 发送邮件
@@ -43,7 +43,7 @@ markdown、内置标签
 openapi接口提供（apikey）
 
 
-####参考资料
+#### 参考资料
 > jstree
 * http://blog.csdn.net/ceoshun/article/details/38658853
 * http://www.cnblogs.com/luozhihao/p/4679050.html
